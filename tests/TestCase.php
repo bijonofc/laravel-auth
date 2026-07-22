@@ -11,4 +11,12 @@ abstract class TestCase extends BaseTestCase
     {
         return [AuthServiceProvider::class];
     }
+
+    protected function getPackageAliases($app): array
+    {
+        return [
+            'GoogleOAuth' => \Appsbd\Auth\Facades\GoogleOAuth::class,
+            'Turnstile'   => \Appsbd\Auth\Facades\Turnstile::class,
+        ];
+    }
 }
