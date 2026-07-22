@@ -1,36 +1,37 @@
 {
-    "name": "appsbd/auth",
-    "description": "Authentication integrations for Appsbd Laravel products: Google OAuth2 and Cloudflare Turnstile.",
+    "name": "bijon/laravel-auth",
+    "description": "Authentication integrations for Laravel: Google OAuth2 and Cloudflare Turnstile.",
     "type": "library",
     "license": "MIT",
     "keywords": ["laravel", "authentication", "oauth", "google", "turnstile", "captcha"],
     "authors": [
-        { "name": "Appsbd" }
+        { "name": "Bijan Kanti Munshi" }
     ],
     "require": {
         "php": "^8.3",
-        "illuminate/support": "^12.0|^13.0",
+        "composer/ca-bundle": "^1.5",
+        "illuminate/contracts": "^12.0|^13.0",
         "illuminate/http": "^12.0|^13.0",
-        "illuminate/validation": "^12.0|^13.0",
         "illuminate/session": "^12.0|^13.0",
-        "illuminate/contracts": "^12.0|^13.0"
+        "illuminate/support": "^12.0|^13.0",
+        "illuminate/validation": "^12.0|^13.0"
     },
     "require-dev": {
         "pestphp/pest": "^3.0|^4.0",
         "orchestra/testbench": "^10.0|^11.0"
     },
     "autoload": {
-        "psr-4": { "Appsbd\\Auth\\": "src/" }
+        "psr-4": { "Bijon\\LaravelAuth\\": "src/" }
     },
     "autoload-dev": {
-        "psr-4": { "Appsbd\\Auth\\Tests\\": "tests/" }
+        "psr-4": { "Bijon\\LaravelAuth\\Tests\\": "tests/" }
     },
     "extra": {
         "laravel": {
-            "providers": ["Appsbd\\Auth\\Providers\\AuthServiceProvider"],
+            "providers": ["Bijon\\LaravelAuth\\Providers\\AuthServiceProvider"],
             "aliases": {
-                "GoogleOAuth": "Appsbd\\Auth\\Facades\\GoogleOAuth",
-                "Turnstile": "Appsbd\\Auth\\Facades\\Turnstile"
+                "GoogleOAuth": "Bijon\\LaravelAuth\\Facades\\GoogleOAuth",
+                "Turnstile": "Bijon\\LaravelAuth\\Facades\\Turnstile"
             }
         }
     },

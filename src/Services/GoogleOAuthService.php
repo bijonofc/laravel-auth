@@ -1,22 +1,24 @@
 <?php
 
-namespace Appsbd\Auth\Services;
+namespace Bijon\LaravelAuth\Services;
 
-use Appsbd\Auth\Contracts\OAuthProviderInterface;
-use Appsbd\Auth\Events\GoogleLoginFailed;
-use Appsbd\Auth\Events\GoogleLoginSucceeded;
-use Appsbd\Auth\Exceptions\ConfigurationException;
-use Appsbd\Auth\Exceptions\OAuthException;
-use Appsbd\Auth\Support\OAuthTokens;
-use Appsbd\Auth\Support\OAuthUser;
+use Bijon\LaravelAuth\Concerns\SendsSecureHttpRequests;
+use Bijon\LaravelAuth\Contracts\OAuthProviderInterface;
+use Bijon\LaravelAuth\Events\GoogleLoginFailed;
+use Bijon\LaravelAuth\Events\GoogleLoginSucceeded;
+use Bijon\LaravelAuth\Exceptions\ConfigurationException;
+use Bijon\LaravelAuth\Exceptions\OAuthException;
+use Bijon\LaravelAuth\Support\OAuthTokens;
+use Bijon\LaravelAuth\Support\OAuthUser;
 use Illuminate\Http\Client\Response;
 use Illuminate\Http\RedirectResponse;
-use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Str;
 
 class GoogleOAuthService implements OAuthProviderInterface
 {
-    public const STATE_SESSION_KEY = 'appsbd-auth.google.state';
+    use SendsSecureHttpRequests;
+
+    public const STATE_SESSION_KEY = 'laravel-auth.google.state';
 
     protected const AUTHORIZE_URL = 'https://accounts.google.com/o/oauth2/v2/auth';
     protected const TOKEN_URL = 'https://oauth2.googleapis.com/token';
@@ -93,7 +95,7 @@ class GoogleOAuthService implements OAuthProviderInterface
 
     public function getTokensFromCode(string $code): OAuthTokens
     {
-        $response = $this->googleRequest(fn () => Http::asForm()->post(self::TOKEN_URL, [
+        $response = $this->googleRequest(fn () => $this->http()->asForm()->post(self::TOKEN_URL, [
             'client_id'     => $this->requireConfig('client_id'),
             'client_secret' => $this->requireConfig('client_secret'),
             'redirect_uri'  => $this->requireConfig('redirect'),
@@ -107,7 +109,7 @@ class GoogleOAuthService implements OAuthProviderInterface
     public function getUserFromAccessToken(string $accessToken): OAuthUser
     {
         $response = $this->googleRequest(
-            fn () => Http::withToken($accessToken)->get(self::USERINFO_URL),
+            fn () => $this->http()->withToken($accessToken)->get(self::USERINFO_URL),
             'fetch user profile'
         );
 
@@ -128,7 +130,7 @@ class GoogleOAuthService implements OAuthProviderInterface
 
     public function refreshToken(string $refreshToken): OAuthTokens
     {
-        $response = $this->googleRequest(fn () => Http::asForm()->post(self::TOKEN_URL, [
+        $response = $this->googleRequest(fn () => $this->http()->asForm()->post(self::TOKEN_URL, [
             'client_id'     => $this->requireConfig('client_id'),
             'client_secret' => $this->requireConfig('client_secret'),
             'grant_type'    => 'refresh_token',
@@ -141,7 +143,7 @@ class GoogleOAuthService implements OAuthProviderInterface
     public function revokeToken(string $token): bool
     {
         try {
-            return Http::asForm()->post(self::REVOKE_URL, ['token' => $token])->successful();
+            return $this->http()->asForm()->post(self::REVOKE_URL, ['token' => $token])->successful();
         } catch (\Throwable $e) {
             throw new OAuthException("Could not reach Google to revoke token: {$e->getMessage()}", previous: $e);
         }
@@ -186,7 +188,7 @@ class GoogleOAuthService implements OAuthProviderInterface
         $value = $this->config[$key] ?? null;
 
         if ($value === null || $value === '') {
-            throw ConfigurationException::missing("appsbd-auth.google.{$key}");
+            throw ConfigurationException::missing("laravel-auth.google.{$key}");
         }
 
         return (string) $value;

@@ -8,7 +8,7 @@
 
 ## Reporting a vulnerability
 
-Please report security vulnerabilities **privately** to `support@appsbd.com`. Do **not** open a public GitHub issue for security reports.
+Please report security vulnerabilities **privately** to `bijon.ofc059@gmail.com`. Do **not** open a public GitHub issue for security reports.
 
 You can expect an acknowledgment within 7 days. Please include a proof of concept and the affected version range if you can.
 

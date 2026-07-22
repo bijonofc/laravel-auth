@@ -1,8 +1,8 @@
 <?php
 
-use Appsbd\Auth\Support\CaptchaResponse;
-use Appsbd\Auth\Support\OAuthTokens;
-use Appsbd\Auth\Support\OAuthUser;
+use Bijon\LaravelAuth\Support\CaptchaResponse;
+use Bijon\LaravelAuth\Support\OAuthTokens;
+use Bijon\LaravelAuth\Support\OAuthUser;
 
 it('holds oauth user data', function () {
     $user = new OAuthUser(id: '123', email: 'a@b.c', name: 'A', avatarUrl: 'https://img', raw: ['sub' => '123']);

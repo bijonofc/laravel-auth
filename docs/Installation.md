@@ -8,12 +8,12 @@
 ## Install
 
 ```bash
-composer require appsbd/auth
+composer require bijon/laravel-auth
 ```
 
 Package auto-discovery registers everything for you:
 
-- `Appsbd\Auth\Providers\AuthServiceProvider`
+- `Bijon\LaravelAuth\Providers\AuthServiceProvider`
 - Facade aliases `GoogleOAuth` and `Turnstile`
 - Route middleware alias `turnstile`
 - Validation rule `turnstile`
@@ -21,30 +21,30 @@ Package auto-discovery registers everything for you:
 ## Publish the config
 
 ```bash
-php artisan vendor:publish --tag=appsbd-auth-config
+php artisan vendor:publish --tag=laravel-auth-config
 ```
 
-This copies `config/appsbd-auth.php` into your app. See [Configuration](Configuration.md) for every key.
+This copies `config/laravel-auth.php` into your app. See [Configuration](Configuration.md) for every key.
 
 ## Environment variables
 
 ```env
 # Google OAuth2
-APPSBD_GOOGLE_CLIENT_ID=your-client-id.apps.googleusercontent.com
-APPSBD_GOOGLE_CLIENT_SECRET=your-client-secret
-APPSBD_GOOGLE_REDIRECT_URI=https://your-app.test/auth/google/callback
+LA_GOOGLE_CLIENT_ID=your-client-id.apps.googleusercontent.com
+LA_GOOGLE_CLIENT_SECRET=your-client-secret
+LA_GOOGLE_REDIRECT_URI=https://your-app.test/auth/google/callback
 
 # Cloudflare Turnstile
-APPSBD_TURNSTILE_SITE_KEY=0x4AAAAAAA...
-APPSBD_TURNSTILE_SECRET=0x4AAAAAAA...
-APPSBD_TURNSTILE_TIMEOUT=10
+LA_TURNSTILE_SITE_KEY=0x4AAAAAAA...
+LA_TURNSTILE_SECRET=0x4AAAAAAA...
+LA_TURNSTILE_TIMEOUT=10
 ```
 
 ## Google Cloud Console setup
 
 1. Create (or select) a project at <https://console.cloud.google.com/>.
 2. **APIs & Services → Credentials → Create Credentials → OAuth client ID**, application type **Web application**.
-3. Add an **Authorized redirect URI** that exactly matches `APPSBD_GOOGLE_REDIRECT_URI` (scheme, host, and path).
+3. Add an **Authorized redirect URI** that exactly matches `LA_GOOGLE_REDIRECT_URI` (scheme, host, and path).
 4. Copy the client ID and client secret into your `.env`.
 
 ## Cloudflare Turnstile setup

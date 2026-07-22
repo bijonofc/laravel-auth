@@ -223,7 +223,7 @@ Full file: [`examples/HandleGoogleLogin.php`](../examples/HandleGoogleLogin.php)
 
 ```php
 use App\Listeners\HandleGoogleLogin;
-use Appsbd\Auth\Events\GoogleLoginSucceeded;
+use Bijon\LaravelAuth\Events\GoogleLoginSucceeded;
 use Illuminate\Support\Facades\Event;
 
 // AppServiceProvider::boot()

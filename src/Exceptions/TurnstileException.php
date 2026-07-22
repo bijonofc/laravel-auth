@@ -1,8 +1,8 @@
 <?php
 
-namespace Appsbd\Auth\Exceptions;
+namespace Bijon\LaravelAuth\Exceptions;
 
-use Appsbd\Auth\Support\CaptchaResponse;
+use Bijon\LaravelAuth\Support\CaptchaResponse;
 
 class TurnstileException extends AuthException
 {

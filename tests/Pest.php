@@ -1,8 +1,8 @@
 <?php
 
-use Appsbd\Auth\Services\GoogleOAuthService;
+use Bijon\LaravelAuth\Services\GoogleOAuthService;
 
-uses(Appsbd\Auth\Tests\TestCase::class)->in(__DIR__);
+uses(Bijon\LaravelAuth\Tests\TestCase::class)->in(__DIR__);
 
 function googleService(array $overrides = []): GoogleOAuthService
 {

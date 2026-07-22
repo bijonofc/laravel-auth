@@ -1,8 +1,8 @@
 <?php
 
-namespace Appsbd\Auth\Events;
+namespace Bijon\LaravelAuth\Events;
 
-use Appsbd\Auth\Support\CaptchaResponse;
+use Bijon\LaravelAuth\Support\CaptchaResponse;
 
 final class TurnstileFailed
 {

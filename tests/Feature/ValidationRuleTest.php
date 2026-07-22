@@ -1,10 +1,10 @@
 <?php
 
-use Appsbd\Auth\Validation\TurnstileRule;
+use Bijon\LaravelAuth\Validation\TurnstileRule;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Validator;
 
-beforeEach(fn () => config()->set('appsbd-auth.turnstile.secret', 'ts-secret'));
+beforeEach(fn () => config()->set('laravel-auth.turnstile.secret', 'ts-secret'));
 
 it('passes as a rule object when verification succeeds', function () {
     Http::fake(['challenges.cloudflare.com/*' => Http::response(['success' => true])]);

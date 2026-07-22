@@ -1,6 +1,6 @@
 <?php
 
-namespace Appsbd\Auth\Exceptions;
+namespace Bijon\LaravelAuth\Exceptions;
 
 class AuthException extends \Exception
 {

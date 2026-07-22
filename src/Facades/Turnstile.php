@@ -1,13 +1,13 @@
 <?php
 
-namespace Appsbd\Auth\Facades;
+namespace Bijon\LaravelAuth\Facades;
 
-use Appsbd\Auth\Services\TurnstileService;
+use Bijon\LaravelAuth\Services\TurnstileService;
 use Illuminate\Support\Facades\Facade;
 
 /**
- * @method static \Appsbd\Auth\Support\CaptchaResponse verify(string $token, ?string $ip = null)
- * @method static \Appsbd\Auth\Support\CaptchaResponse verifyOrFail(string $token, ?string $ip = null)
+ * @method static \Bijon\LaravelAuth\Support\CaptchaResponse verify(string $token, ?string $ip = null)
+ * @method static \Bijon\LaravelAuth\Support\CaptchaResponse verifyOrFail(string $token, ?string $ip = null)
  *
  * @see TurnstileService
  */

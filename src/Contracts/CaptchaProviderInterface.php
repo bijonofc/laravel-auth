@@ -1,8 +1,8 @@
 <?php
 
-namespace Appsbd\Auth\Contracts;
+namespace Bijon\LaravelAuth\Contracts;
 
-use Appsbd\Auth\Support\CaptchaResponse;
+use Bijon\LaravelAuth\Support\CaptchaResponse;
 
 interface CaptchaProviderInterface
 {

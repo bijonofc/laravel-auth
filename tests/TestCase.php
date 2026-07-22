@@ -1,8 +1,8 @@
 <?php
 
-namespace Appsbd\Auth\Tests;
+namespace Bijon\LaravelAuth\Tests;
 
-use Appsbd\Auth\Providers\AuthServiceProvider;
+use Bijon\LaravelAuth\Providers\AuthServiceProvider;
 use Orchestra\Testbench\TestCase as BaseTestCase;
 
 abstract class TestCase extends BaseTestCase
@@ -20,8 +20,8 @@ abstract class TestCase extends BaseTestCase
     protected function getPackageAliases($app): array
     {
         return [
-            'GoogleOAuth' => \Appsbd\Auth\Facades\GoogleOAuth::class,
-            'Turnstile'   => \Appsbd\Auth\Facades\Turnstile::class,
+            'GoogleOAuth' => \Bijon\LaravelAuth\Facades\GoogleOAuth::class,
+            'Turnstile'   => \Bijon\LaravelAuth\Facades\Turnstile::class,
         ];
     }
 }

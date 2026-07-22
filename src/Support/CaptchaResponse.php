@@ -1,6 +1,6 @@
 <?php
 
-namespace Appsbd\Auth\Support;
+namespace Bijon\LaravelAuth\Support;
 
 final readonly class CaptchaResponse
 {

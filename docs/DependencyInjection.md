@@ -4,14 +4,14 @@ The service provider binds both services as **singletons** and aliases the contr
 
 | Contract | Implementation |
 |---|---|
-| `Appsbd\Auth\Contracts\OAuthProviderInterface` | `Appsbd\Auth\Services\GoogleOAuthService` |
-| `Appsbd\Auth\Contracts\CaptchaProviderInterface` | `Appsbd\Auth\Services\TurnstileService` |
+| `Bijon\LaravelAuth\Contracts\OAuthProviderInterface` | `Bijon\LaravelAuth\Services\GoogleOAuthService` |
+| `Bijon\LaravelAuth\Contracts\CaptchaProviderInterface` | `Bijon\LaravelAuth\Services\TurnstileService` |
 
 Type-hint the contract anywhere the container resolves:
 
 ```php
-use Appsbd\Auth\Contracts\OAuthProviderInterface;
-use Appsbd\Auth\Contracts\CaptchaProviderInterface;
+use Bijon\LaravelAuth\Contracts\OAuthProviderInterface;
+use Bijon\LaravelAuth\Contracts\CaptchaProviderInterface;
 
 class GoogleAuthController extends Controller
 {
@@ -35,13 +35,13 @@ class LoginController extends Controller
 
 ## Lifecycle
 
-Services are constructed lazily on first resolution, reading `config('appsbd-auth.google')` / `config('appsbd-auth.turnstile')` at that moment. If a test mutates config, do it **before** the first resolution in that test.
+Services are constructed lazily on first resolution, reading `config('laravel-auth.google')` / `config('laravel-auth.turnstile')` at that moment. If a test mutates config, do it **before** the first resolution in that test.
 
 ## Swapping implementations in tests
 
 ```php
-use Appsbd\Auth\Contracts\CaptchaProviderInterface;
-use Appsbd\Auth\Support\CaptchaResponse;
+use Bijon\LaravelAuth\Contracts\CaptchaProviderInterface;
+use Bijon\LaravelAuth\Support\CaptchaResponse;
 
 $fake = new class implements CaptchaProviderInterface {
     public function verify(string $token, ?string $ip = null): CaptchaResponse

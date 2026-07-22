@@ -32,7 +32,7 @@ Http::fake([
         'error' => 'invalid_grant', 'error_description' => 'Bad code.',
     ], 400),
 ]);
-// -> the package throws Appsbd\Auth\Exceptions\OAuthException
+// -> the package throws Bijon\LaravelAuth\Exceptions\OAuthException
 ```
 
 ## Faking Turnstile
@@ -62,7 +62,7 @@ $this->postJson('/login', [
 ## Faking events
 
 ```php
-use Appsbd\Auth\Events\GoogleLoginSucceeded;
+use Bijon\LaravelAuth\Events\GoogleLoginSucceeded;
 use Illuminate\Support\Facades\Event;
 
 Event::fake([GoogleLoginSucceeded::class]);

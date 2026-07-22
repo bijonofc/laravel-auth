@@ -2,7 +2,7 @@
 
 Two facades are registered by auto-discovery. They are optional sugar over the container singletons — everything they do is available via [dependency injection](DependencyInjection.md).
 
-## `Appsbd\Auth\Facades\GoogleOAuth`
+## `Bijon\LaravelAuth\Facades\GoogleOAuth`
 
 | Method | Returns |
 |---|---|
@@ -14,7 +14,7 @@ Two facades are registered by auto-discovery. They are optional sugar over the c
 | `refreshToken(string $refreshToken)` | `OAuthTokens` |
 | `revokeToken(string $token)` | `bool` |
 
-## `Appsbd\Auth\Facades\Turnstile`
+## `Bijon\LaravelAuth\Facades\Turnstile`
 
 | Method | Returns |
 |---|---|

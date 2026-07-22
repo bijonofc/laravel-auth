@@ -1,9 +1,9 @@
 <?php
 
-use Appsbd\Auth\Events\GoogleLoginFailed;
-use Appsbd\Auth\Events\GoogleLoginSucceeded;
-use Appsbd\Auth\Exceptions\OAuthException;
-use Appsbd\Auth\Services\GoogleOAuthService;
+use Bijon\LaravelAuth\Events\GoogleLoginFailed;
+use Bijon\LaravelAuth\Events\GoogleLoginSucceeded;
+use Bijon\LaravelAuth\Exceptions\OAuthException;
+use Bijon\LaravelAuth\Services\GoogleOAuthService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Http;

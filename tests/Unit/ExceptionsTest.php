@@ -1,10 +1,10 @@
 <?php
 
-use Appsbd\Auth\Exceptions\AuthException;
-use Appsbd\Auth\Exceptions\ConfigurationException;
-use Appsbd\Auth\Exceptions\OAuthException;
-use Appsbd\Auth\Exceptions\TurnstileException;
-use Appsbd\Auth\Support\CaptchaResponse;
+use Bijon\LaravelAuth\Exceptions\AuthException;
+use Bijon\LaravelAuth\Exceptions\ConfigurationException;
+use Bijon\LaravelAuth\Exceptions\OAuthException;
+use Bijon\LaravelAuth\Exceptions\TurnstileException;
+use Bijon\LaravelAuth\Support\CaptchaResponse;
 
 it('has a common exception hierarchy', function () {
     expect(new OAuthException('x'))->toBeInstanceOf(AuthException::class)
@@ -12,8 +12,8 @@ it('has a common exception hierarchy', function () {
 });
 
 it('names the missing config key', function () {
-    $e = ConfigurationException::missing('appsbd-auth.google.client_id');
-    expect($e->getMessage())->toContain('appsbd-auth.google.client_id');
+    $e = ConfigurationException::missing('laravel-auth.google.client_id');
+    expect($e->getMessage())->toContain('laravel-auth.google.client_id');
 });
 
 it('carries the captcha response on turnstile failure', function () {

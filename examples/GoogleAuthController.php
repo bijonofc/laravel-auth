@@ -3,8 +3,8 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
-use Appsbd\Auth\Exceptions\OAuthException;
-use Appsbd\Auth\Facades\GoogleOAuth;
+use Bijon\LaravelAuth\Exceptions\OAuthException;
+use Bijon\LaravelAuth\Facades\GoogleOAuth;
 use Illuminate\Http\RedirectResponse;
 
 /**

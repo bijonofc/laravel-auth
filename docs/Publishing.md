@@ -22,7 +22,7 @@
 The v1 architecture reserves room for Microsoft, GitHub, Facebook, Apple, LinkedIn, reCAPTCHA v2/v3, hCaptcha, OTP, and Passkeys:
 
 1. New service in `src/Services/` implementing the existing `OAuthProviderInterface` or `CaptchaProviderInterface`.
-2. New config block in `config/appsbd-auth.php` (additive).
+2. New config block in `config/laravel-auth.php` (additive).
 3. Optional facade + auto-discovery alias.
 4. New events following the `<Provider>LoginSucceeded` / `<Provider>Verified` naming.
 5. Tests with `Http::fake()` and a doc page.

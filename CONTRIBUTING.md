@@ -1,6 +1,6 @@
 # Contributing
 
-Thanks for considering a contribution to `appsbd/auth`.
+Thanks for considering a contribution to `bijon/laravel-auth`.
 
 ## Workflow
 

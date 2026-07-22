@@ -1,7 +1,7 @@
 <?php
 
-use Appsbd\Auth\Exceptions\ConfigurationException;
-use Appsbd\Auth\Services\GoogleOAuthService;
+use Bijon\LaravelAuth\Exceptions\ConfigurationException;
+use Bijon\LaravelAuth\Services\GoogleOAuthService;
 
 it('generates an authorization url with default scopes and stores random state in the session', function () {
     $url = googleService()->generateAuthorizationUrl();
@@ -36,8 +36,8 @@ it('lets explicit scopes override config scopes', function () {
 
 it('throws a ConfigurationException naming the key when client_id is missing', function () {
     googleService(['client_id' => null])->generateAuthorizationUrl();
-})->throws(ConfigurationException::class, 'appsbd-auth.google.client_id');
+})->throws(ConfigurationException::class, 'laravel-auth.google.client_id');
 
 it('throws a ConfigurationException naming the key when redirect is missing', function () {
     googleService(['redirect' => ''])->generateAuthorizationUrl();
-})->throws(ConfigurationException::class, 'appsbd-auth.google.redirect');
+})->throws(ConfigurationException::class, 'laravel-auth.google.redirect');

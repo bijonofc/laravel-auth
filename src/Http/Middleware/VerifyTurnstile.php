@@ -1,8 +1,8 @@
 <?php
 
-namespace Appsbd\Auth\Http\Middleware;
+namespace Bijon\LaravelAuth\Http\Middleware;
 
-use Appsbd\Auth\Contracts\CaptchaProviderInterface;
+use Bijon\LaravelAuth\Contracts\CaptchaProviderInterface;
 use Closure;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -15,7 +15,7 @@ class VerifyTurnstile
 
     public function handle(Request $request, Closure $next): Response
     {
-        $inputName = config('appsbd-auth.turnstile.input_name', 'cf-turnstile-response');
+        $inputName = config('laravel-auth.turnstile.input_name', 'cf-turnstile-response');
         $message = 'Captcha verification failed. Please try again.';
 
         $result = $this->captcha->verify((string) $request->input($inputName, ''), $request->ip());

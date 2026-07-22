@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Route;
 
 beforeEach(function () {
-    config()->set('appsbd-auth.turnstile.secret', 'ts-secret');
+    config()->set('laravel-auth.turnstile.secret', 'ts-secret');
 
     Route::post('/protected', fn () => response()->json(['ok' => true]))
         ->middleware(['web', 'turnstile']);
@@ -36,7 +36,7 @@ it('redirects back with a validation error for web requests', function () {
 });
 
 it('reads the token from a configurable input name', function () {
-    config()->set('appsbd-auth.turnstile.input_name', 'captcha_token');
+    config()->set('laravel-auth.turnstile.input_name', 'captcha_token');
     Http::fake(['challenges.cloudflare.com/*' => Http::response(['success' => true])]);
 
     $this->post('/protected', ['captcha_token' => 'good'])->assertOk();

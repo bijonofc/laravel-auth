@@ -3,7 +3,7 @@
 namespace App\Listeners;
 
 use App\Models\User;
-use Appsbd\Auth\Events\GoogleLoginSucceeded;
+use Bijon\LaravelAuth\Events\GoogleLoginSucceeded;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
 

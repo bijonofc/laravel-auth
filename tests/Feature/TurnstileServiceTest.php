@@ -1,12 +1,14 @@
 <?php
 
-use Appsbd\Auth\Events\TurnstileFailed;
-use Appsbd\Auth\Events\TurnstileVerified;
-use Appsbd\Auth\Exceptions\ConfigurationException;
-use Appsbd\Auth\Exceptions\TurnstileException;
-use Appsbd\Auth\Services\TurnstileService;
+use Bijon\LaravelAuth\Events\TurnstileFailed;
+use Bijon\LaravelAuth\Events\TurnstileVerified;
+use Bijon\LaravelAuth\Exceptions\ConfigurationException;
+use Bijon\LaravelAuth\Exceptions\TurnstileException;
+use Bijon\LaravelAuth\Services\TurnstileService;
+use Composer\CaBundle\CaBundle;
 use Illuminate\Http\Client\ConnectionException;
 use Illuminate\Support\Facades\Event;
+use Illuminate\Support\Facades\Exceptions;
 use Illuminate\Support\Facades\Http;
 
 function turnstileService(array $overrides = []): TurnstileService
@@ -56,13 +58,36 @@ it('returns failure codes and fires TurnstileFailed', function () {
     Event::assertDispatched(TurnstileFailed::class);
 });
 
-it('never throws on network failure — returns internal-error', function () {
+it('never throws on network failure — returns network-error', function () {
     Http::fake(fn () => throw new ConnectionException('timeout'));
 
     $result = turnstileService()->verify('any');
 
     expect($result->failed())->toBeTrue()
-        ->and($result->errorCodes)->toBe(['internal-error']);
+        ->and($result->errorCodes)->toBe(['network-error']);
+});
+
+it('reports the transport exception so it reaches the host app log', function () {
+    Exceptions::fake();
+    Http::fake(fn () => throw new ConnectionException('cURL error 60: SSL certificate problem'));
+
+    turnstileService()->verify('any');
+
+    Exceptions::assertReported(ConnectionException::class);
+});
+
+it('sends the siteverify request with the CA bundle verify option', function () {
+    $captured = null;
+    Http::fake(function ($request, $options) use (&$captured) {
+        $captured = $options;
+
+        return Http::response(['success' => true]);
+    });
+
+    turnstileService()->verify('the-token');
+
+    expect($captured['verify'] ?? null)->toBe(CaBundle::getSystemCaRootBundlePath())
+        ->and(file_exists($captured['verify']))->toBeTrue();
 });
 
 it('treats HTTP 5xx as internal-error without throwing', function () {
@@ -97,4 +122,4 @@ it('verifyOrFail returns the response on success', function () {
 
 it('throws ConfigurationException when secret is missing', function () {
     turnstileService(['secret' => null])->verify('token');
-})->throws(ConfigurationException::class, 'appsbd-auth.turnstile.secret');
+})->throws(ConfigurationException::class, 'laravel-auth.turnstile.secret');

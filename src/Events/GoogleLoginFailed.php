@@ -1,6 +1,6 @@
 <?php
 
-namespace Appsbd\Auth\Events;
+namespace Bijon\LaravelAuth\Events;
 
 final class GoogleLoginFailed
 {

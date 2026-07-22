@@ -1,10 +1,10 @@
 <?php
 
-use Appsbd\Auth\Contracts\CaptchaProviderInterface;
-use Appsbd\Auth\Contracts\OAuthProviderInterface;
-use Appsbd\Auth\Facades\GoogleOAuth;
-use Appsbd\Auth\Services\GoogleOAuthService;
-use Appsbd\Auth\Services\TurnstileService;
+use Bijon\LaravelAuth\Contracts\CaptchaProviderInterface;
+use Bijon\LaravelAuth\Contracts\OAuthProviderInterface;
+use Bijon\LaravelAuth\Facades\GoogleOAuth;
+use Bijon\LaravelAuth\Services\GoogleOAuthService;
+use Bijon\LaravelAuth\Services\TurnstileService;
 
 it('binds interfaces to singleton implementations', function () {
     expect(app(OAuthProviderInterface::class))->toBeInstanceOf(GoogleOAuthService::class)
@@ -14,8 +14,8 @@ it('binds interfaces to singleton implementations', function () {
 });
 
 it('resolves services through facades using app config', function () {
-    config()->set('appsbd-auth.google.client_id', 'cid');
-    config()->set('appsbd-auth.google.redirect', 'https://app.test/cb');
+    config()->set('laravel-auth.google.client_id', 'cid');
+    config()->set('laravel-auth.google.redirect', 'https://app.test/cb');
 
     $url = GoogleOAuth::generateAuthorizationUrl(state: 's');
 

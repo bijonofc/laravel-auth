@@ -1,6 +1,6 @@
 # Middleware
 
-The package registers the route middleware alias `turnstile` (`Appsbd\Auth\Http\Middleware\VerifyTurnstile`).
+The package registers the route middleware alias `turnstile` (`Bijon\LaravelAuth\Http\Middleware\VerifyTurnstile`).
 
 ## Usage
 
@@ -13,7 +13,7 @@ Route::middleware('turnstile')->group(function () {
 });
 ```
 
-The middleware reads the token from the request input named by `appsbd-auth.turnstile.input_name` (default `cf-turnstile-response`), verifies it with the client IP, and:
+The middleware reads the token from the request input named by `laravel-auth.turnstile.input_name` (default `cf-turnstile-response`), verifies it with the client IP, and:
 
 - **Success** → passes the request through.
 - **Failure, JSON request** (`expectsJson()`) → responds `422`:
@@ -40,7 +40,7 @@ The middleware reads the token from the request input named by `appsbd-auth.turn
 ## Changing the input name
 
 ```php
-// config/appsbd-auth.php
+// config/laravel-auth.php
 'turnstile' => [
     'input_name' => 'captcha_token',
 ],

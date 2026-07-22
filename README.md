@@ -1,6 +1,6 @@
-# appsbd/auth
+# bijon/laravel-auth
 
-Authentication integrations for Appsbd Laravel products: **Google OAuth2** and **Cloudflare Turnstile**, built for Laravel 12/13 apps — especially Vue 3 SPAs using Sanctum cookie auth.
+Authentication integrations for Laravel: **Google OAuth2** and **Cloudflare Turnstile**, built for Laravel 12/13 apps — especially Vue 3 SPAs using Sanctum cookie auth.
 
 ## Features
 
@@ -19,25 +19,25 @@ Authentication integrations for Appsbd Laravel products: **Google OAuth2** and *
 ## Installation
 
 ```bash
-composer require appsbd/auth
+composer require bijon/laravel-auth
 ```
 
 The service provider, facades, middleware alias, and validation rule are registered via package auto-discovery. Publish the config:
 
 ```bash
-php artisan vendor:publish --tag=appsbd-auth-config
+php artisan vendor:publish --tag=laravel-auth-config
 ```
 
 Set your environment variables:
 
 ```env
-APPSBD_GOOGLE_CLIENT_ID=your-client-id.apps.googleusercontent.com
-APPSBD_GOOGLE_CLIENT_SECRET=your-client-secret
-APPSBD_GOOGLE_REDIRECT_URI=https://your-app.test/auth/google/callback
+LA_GOOGLE_CLIENT_ID=your-client-id.apps.googleusercontent.com
+LA_GOOGLE_CLIENT_SECRET=your-client-secret
+LA_GOOGLE_REDIRECT_URI=https://your-app.test/auth/google/callback
 
-APPSBD_TURNSTILE_SITE_KEY=0x4AAAAAAA...
-APPSBD_TURNSTILE_SECRET=0x4AAAAAAA...
-APPSBD_TURNSTILE_TIMEOUT=10
+LA_TURNSTILE_SITE_KEY=0x4AAAAAAA...
+LA_TURNSTILE_SECRET=0x4AAAAAAA...
+LA_TURNSTILE_TIMEOUT=10
 ```
 
 ## Quick start — Google OAuth
@@ -45,7 +45,7 @@ APPSBD_TURNSTILE_TIMEOUT=10
 The package returns typed DTOs and fires events; your app writes the routes and owns the User model:
 
 ```php
-use Appsbd\Auth\Facades\GoogleOAuth;
+use Bijon\LaravelAuth\Facades\GoogleOAuth;
 
 Route::get('/auth/google/redirect', fn () => GoogleOAuth::redirect());
 
@@ -59,7 +59,7 @@ Route::get('/auth/google/callback', function () {
 Listen to the event to find-or-create your user and log them in:
 
 ```php
-use Appsbd\Auth\Events\GoogleLoginSucceeded;
+use Bijon\LaravelAuth\Events\GoogleLoginSucceeded;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
 
@@ -92,7 +92,7 @@ $request->validate([
 Or call the service directly:
 
 ```php
-use Appsbd\Auth\Facades\Turnstile;
+use Bijon\LaravelAuth\Facades\Turnstile;
 
 $result = Turnstile::verify($token, $request->ip());
 

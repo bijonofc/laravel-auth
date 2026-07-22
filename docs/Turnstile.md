@@ -1,6 +1,6 @@
 # Cloudflare Turnstile
 
-`Appsbd\Auth\Services\TurnstileService` implements `Appsbd\Auth\Contracts\CaptchaProviderInterface`. Resolve it via DI, `app(CaptchaProviderInterface::class)`, or the `Turnstile` facade.
+`Bijon\LaravelAuth\Services\TurnstileService` implements `Bijon\LaravelAuth\Contracts\CaptchaProviderInterface`. Resolve it via DI, `app(CaptchaProviderInterface::class)`, or the `Turnstile` facade.
 
 ## API
 
@@ -16,7 +16,7 @@ public function verifyOrFail(string $token, ?string $ip = null): CaptchaResponse
 | Field | Type | Meaning |
 |---|---|---|
 | `success` | bool | verification passed |
-| `errorCodes` | array | Cloudflare error codes (e.g. `invalid-input-response`, `timeout-or-duplicate`) or `['internal-error']` on network failure |
+| `errorCodes` | array | Cloudflare error codes (e.g. `invalid-input-response`, `timeout-or-duplicate`), `['internal-error']` when Cloudflare responds with an HTTP error, or `['network-error']` when Cloudflare could not be reached at all |
 | `hostname` | ?string | hostname the challenge was solved on |
 | `challengedAt` | ?string | challenge timestamp (ISO 8601) |
 | `action` | ?string | the widget `action` value, if set |
@@ -27,23 +27,25 @@ public function verifyOrFail(string $token, ?string $ip = null): CaptchaResponse
 ## Failure semantics
 
 - **Invalid token** → `verify()` returns a failed `CaptchaResponse` with Cloudflare's error codes. It does not throw.
-- **Network failure (timeout, DNS, 5xx)** → `verify()` returns a failed `CaptchaResponse` with `['internal-error']`. It **never throws** for network problems — verification fails closed.
-- **`verifyOrFail()`** → same as `verify()`, but throws `Appsbd\Auth\Exceptions\TurnstileException` on any failure. The exception carries the response: `$e->response`.
-- **Missing secret** → `ConfigurationException` naming `appsbd-auth.turnstile.secret` (a config error is a bug, so it throws from both methods).
+- **HTTP error from Cloudflare (5xx)** → `verify()` returns a failed `CaptchaResponse` with `['internal-error']`. It does not throw.
+- **Transport failure (timeout, DNS, TLS/certificate problems)** → `verify()` returns a failed `CaptchaResponse` with `['network-error']` and the underlying exception is passed to `report()`, so the real cause (e.g. `cURL error 60`) lands in the host app's log. It **never throws** for network problems — verification fails closed.
+- **TLS out of the box** → requests are sent with an explicit CA bundle via `composer/ca-bundle`, which falls back to a bundled Mozilla CA file when the host has no certificate store configured (common on Windows WAMP/XAMPP). No server configuration is required.
+- **`verifyOrFail()`** → same as `verify()`, but throws `Bijon\LaravelAuth\Exceptions\TurnstileException` on any failure. The exception carries the response: `$e->response`.
+- **Missing secret** → `ConfigurationException` naming `laravel-auth.turnstile.secret` (a config error is a bug, so it throws from both methods).
 
 ## Events
 
 | Event | Payload | Fired when |
 |---|---|---|
-| `Appsbd\Auth\Events\TurnstileVerified` | `CaptchaResponse $response` | verification succeeded |
-| `Appsbd\Auth\Events\TurnstileFailed` | `CaptchaResponse $response` | verification failed (including network failures) |
+| `Bijon\LaravelAuth\Events\TurnstileVerified` | `CaptchaResponse $response` | verification succeeded |
+| `Bijon\LaravelAuth\Events\TurnstileFailed` | `CaptchaResponse $response` | verification failed (including network failures) |
 
 ## Frontend widget (plain HTML)
 
 ```html
 <form method="POST" action="/login">
     <!-- your fields -->
-    <div class="cf-turnstile" data-sitekey="{{ config('appsbd-auth.turnstile.site_key') }}"></div>
+    <div class="cf-turnstile" data-sitekey="{{ config('laravel-auth.turnstile.site_key') }}"></div>
     <button type="submit">Log in</button>
 </form>
 

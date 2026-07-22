@@ -3,14 +3,14 @@
 Two equivalent forms are registered/available out of the box:
 
 - **String rule:** `'turnstile'`
-- **Rule object:** `new \Appsbd\Auth\Validation\TurnstileRule`
+- **Rule object:** `new \Bijon\LaravelAuth\Validation\TurnstileRule`
 
 Both resolve the captcha service from the container and verify the value with the current request's IP.
 
 ## In a FormRequest
 
 ```php
-use Appsbd\Auth\Validation\TurnstileRule;
+use Bijon\LaravelAuth\Validation\TurnstileRule;
 
 class LoginRequest extends FormRequest
 {

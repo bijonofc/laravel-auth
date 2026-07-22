@@ -1,8 +1,8 @@
 <?php
 
-namespace Appsbd\Auth\Validation;
+namespace Bijon\LaravelAuth\Validation;
 
-use Appsbd\Auth\Contracts\CaptchaProviderInterface;
+use Bijon\LaravelAuth\Contracts\CaptchaProviderInterface;
 use Closure;
 use Illuminate\Contracts\Validation\ValidationRule;
 

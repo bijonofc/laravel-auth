@@ -1,9 +1,9 @@
 <?php
 
-namespace Appsbd\Auth\Events;
+namespace Bijon\LaravelAuth\Events;
 
-use Appsbd\Auth\Support\OAuthTokens;
-use Appsbd\Auth\Support\OAuthUser;
+use Bijon\LaravelAuth\Support\OAuthTokens;
+use Bijon\LaravelAuth\Support\OAuthUser;
 
 final class GoogleLoginSucceeded
 {

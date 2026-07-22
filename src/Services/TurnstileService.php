@@ -1,17 +1,19 @@
 <?php
 
-namespace Appsbd\Auth\Services;
+namespace Bijon\LaravelAuth\Services;
 
-use Appsbd\Auth\Contracts\CaptchaProviderInterface;
-use Appsbd\Auth\Events\TurnstileFailed;
-use Appsbd\Auth\Events\TurnstileVerified;
-use Appsbd\Auth\Exceptions\ConfigurationException;
-use Appsbd\Auth\Exceptions\TurnstileException;
-use Appsbd\Auth\Support\CaptchaResponse;
-use Illuminate\Support\Facades\Http;
+use Bijon\LaravelAuth\Concerns\SendsSecureHttpRequests;
+use Bijon\LaravelAuth\Contracts\CaptchaProviderInterface;
+use Bijon\LaravelAuth\Events\TurnstileFailed;
+use Bijon\LaravelAuth\Events\TurnstileVerified;
+use Bijon\LaravelAuth\Exceptions\ConfigurationException;
+use Bijon\LaravelAuth\Exceptions\TurnstileException;
+use Bijon\LaravelAuth\Support\CaptchaResponse;
 
 class TurnstileService implements CaptchaProviderInterface
 {
+    use SendsSecureHttpRequests;
+
     protected const VERIFY_URL = 'https://challenges.cloudflare.com/turnstile/v0/siteverify';
 
     public function __construct(protected array $config)
@@ -23,11 +25,12 @@ class TurnstileService implements CaptchaProviderInterface
         $secret = $this->config['secret'] ?? null;
 
         if ($secret === null || $secret === '') {
-            throw ConfigurationException::missing('appsbd-auth.turnstile.secret');
+            throw ConfigurationException::missing('laravel-auth.turnstile.secret');
         }
 
         try {
-            $response = Http::timeout((int) ($this->config['timeout'] ?? 10))
+            $response = $this->http()
+                ->timeout((int) ($this->config['timeout'] ?? 10))
                 ->asForm()
                 ->post(self::VERIFY_URL, [
                     'secret'   => $secret,
@@ -48,8 +51,9 @@ class TurnstileService implements CaptchaProviderInterface
                     cdata: $data['cdata'] ?? null,
                 );
             }
-        } catch (\Throwable) {
-            $result = new CaptchaResponse(success: false, errorCodes: ['internal-error']);
+        } catch (\Throwable $e) {
+            report($e);
+            $result = new CaptchaResponse(success: false, errorCodes: ['network-error']);
         }
 
         event($result->success ? new TurnstileVerified($result) : new TurnstileFailed($result));

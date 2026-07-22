@@ -1,6 +1,7 @@
 <?php
 
-use Appsbd\Auth\Exceptions\OAuthException;
+use Bijon\LaravelAuth\Exceptions\OAuthException;
+use Composer\CaBundle\CaBundle;
 use Illuminate\Http\Client\ConnectionException;
 use Illuminate\Support\Facades\Http;
 
@@ -27,6 +28,20 @@ it('exchanges an authorization code for tokens', function () {
         && $request['code'] === 'the-code'
         && $request['client_id'] === 'cid'
         && $request['client_secret'] === 'secret');
+});
+
+it('sends the token request with the CA bundle verify option', function () {
+    $captured = null;
+    Http::fake(function ($request, $options) use (&$captured) {
+        $captured = $options;
+
+        return Http::response(['access_token' => 'at-123']);
+    });
+
+    googleService()->getTokensFromCode('the-code');
+
+    expect($captured['verify'] ?? null)->toBe(CaBundle::getSystemCaRootBundlePath())
+        ->and(file_exists($captured['verify']))->toBeTrue();
 });
 
 it('maps google token errors to OAuthException with the google message', function () {
