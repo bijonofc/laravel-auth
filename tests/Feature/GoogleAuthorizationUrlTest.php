@@ -3,16 +3,6 @@
 use Appsbd\Auth\Exceptions\ConfigurationException;
 use Appsbd\Auth\Services\GoogleOAuthService;
 
-function googleService(array $overrides = []): GoogleOAuthService
-{
-    return new GoogleOAuthService(array_merge([
-        'client_id'     => 'cid',
-        'client_secret' => 'secret',
-        'redirect'      => 'https://app.test/auth/google/callback',
-        'scopes'        => ['openid', 'email', 'profile'],
-    ], $overrides));
-}
-
 it('generates an authorization url with default scopes and stores random state in the session', function () {
     $url = googleService()->generateAuthorizationUrl();
 
