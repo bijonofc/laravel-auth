@@ -7,6 +7,7 @@ use Appsbd\Auth\Contracts\OAuthProviderInterface;
 use Appsbd\Auth\Http\Middleware\VerifyTurnstile;
 use Appsbd\Auth\Services\GoogleOAuthService;
 use Appsbd\Auth\Services\TurnstileService;
+use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\ServiceProvider;
 
 class AuthServiceProvider extends ServiceProvider
@@ -33,5 +34,11 @@ class AuthServiceProvider extends ServiceProvider
         ], 'appsbd-auth-config');
 
         $this->app['router']->aliasMiddleware('turnstile', VerifyTurnstile::class);
+
+        Validator::extend('turnstile', function ($attribute, $value) {
+            return app(CaptchaProviderInterface::class)
+                ->verify((string) $value, request()->ip())
+                ->success;
+        }, 'The :attribute field failed captcha verification.');
     }
 }

@@ -1,0 +1,19 @@
+<?php
+
+namespace Appsbd\Auth\Validation;
+
+use Appsbd\Auth\Contracts\CaptchaProviderInterface;
+use Closure;
+use Illuminate\Contracts\Validation\ValidationRule;
+
+class TurnstileRule implements ValidationRule
+{
+    public function validate(string $attribute, mixed $value, Closure $fail): void
+    {
+        $result = app(CaptchaProviderInterface::class)->verify((string) $value, request()->ip());
+
+        if ($result->failed()) {
+            $fail('The :attribute field failed captcha verification.');
+        }
+    }
+}
