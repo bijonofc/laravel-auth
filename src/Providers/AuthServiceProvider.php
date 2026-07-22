@@ -4,6 +4,7 @@ namespace Appsbd\Auth\Providers;
 
 use Appsbd\Auth\Contracts\CaptchaProviderInterface;
 use Appsbd\Auth\Contracts\OAuthProviderInterface;
+use Appsbd\Auth\Http\Middleware\VerifyTurnstile;
 use Appsbd\Auth\Services\GoogleOAuthService;
 use Appsbd\Auth\Services\TurnstileService;
 use Illuminate\Support\ServiceProvider;
@@ -30,5 +31,7 @@ class AuthServiceProvider extends ServiceProvider
         $this->publishes([
             __DIR__.'/../../config/appsbd-auth.php' => config_path('appsbd-auth.php'),
         ], 'appsbd-auth-config');
+
+        $this->app['router']->aliasMiddleware('turnstile', VerifyTurnstile::class);
     }
 }
