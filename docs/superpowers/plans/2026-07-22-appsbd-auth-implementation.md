@@ -31,7 +31,7 @@
 **Interfaces:**
 - Produces: `Appsbd\Auth\Tests\TestCase` (extends Testbench, registers `AuthServiceProvider`); `composer test` script running Pest.
 
-- [ ] **Step 1: Write `composer.json`**
+- [x] **Step 1: Write `composer.json`**
 
 ```json
 {
@@ -82,7 +82,7 @@
 }
 ```
 
-- [ ] **Step 2: Write `.gitignore`, `LICENSE`, `phpunit.xml`**
+- [x] **Step 2: Write `.gitignore`, `LICENSE`, `phpunit.xml`**
 
 `.gitignore`:
 ```
@@ -106,7 +106,7 @@ composer.lock
 </phpunit>
 ```
 
-- [ ] **Step 3: Write empty provider `src/Providers/AuthServiceProvider.php`**
+- [x] **Step 3: Write empty provider `src/Providers/AuthServiceProvider.php`**
 
 ```php
 <?php
@@ -127,7 +127,7 @@ class AuthServiceProvider extends ServiceProvider
 }
 ```
 
-- [ ] **Step 4: Write `tests/TestCase.php` and `tests/Pest.php`**
+- [x] **Step 4: Write `tests/TestCase.php` and `tests/Pest.php`**
 
 `tests/TestCase.php`:
 ```php
@@ -154,7 +154,7 @@ abstract class TestCase extends BaseTestCase
 uses(Appsbd\Auth\Tests\TestCase::class)->in(__DIR__);
 ```
 
-- [ ] **Step 5: Install and verify harness runs**
+- [x] **Step 5: Install and verify harness runs**
 
 Run: `composer install` then `composer test`
 Expected: install succeeds; Pest reports no tests (exit 0). If Pest errors on zero tests, add a placeholder `tests/SmokeTest.php`:
@@ -167,7 +167,7 @@ it('boots the package service provider', function () {
 ```
 Run `composer test` again. Expected: PASS (1 test).
 
-- [ ] **Step 6: Commit**
+- [x] **Step 6: Commit**
 
 ```bash
 git add composer.json .gitignore LICENSE phpunit.xml src tests
@@ -185,7 +185,7 @@ git commit -m "feat: package skeleton with Pest + Testbench harness"
 **Interfaces:**
 - Produces: `OAuthUser(string $id, ?string $email, ?string $name, ?string $avatarUrl, array $raw = [])`; `OAuthTokens(string $accessToken, ?string $refreshToken, ?int $expiresIn, ?string $idToken, string $tokenType = 'Bearer')`; `CaptchaResponse(bool $success, array $errorCodes = [], ?string $hostname = null, ?string $challengedAt = null, ?string $action = null, ?string $cdata = null)` with `failed(): bool`; the two contracts exactly as in the spec.
 
-- [ ] **Step 1: Write failing DTO tests `tests/Unit/DtoTest.php`**
+- [x] **Step 1: Write failing DTO tests `tests/Unit/DtoTest.php`**
 
 ```php
 <?php
@@ -216,12 +216,12 @@ it('reports captcha failure state', function () {
 });
 ```
 
-- [ ] **Step 2: Run tests to verify they fail**
+- [x] **Step 2: Run tests to verify they fail**
 
 Run: `vendor/bin/pest tests/Unit/DtoTest.php`
 Expected: FAIL — class not found.
 
-- [ ] **Step 3: Write the DTOs**
+- [x] **Step 3: Write the DTOs**
 
 `src/Support/OAuthUser.php`:
 ```php
@@ -286,7 +286,7 @@ final readonly class CaptchaResponse
 }
 ```
 
-- [ ] **Step 4: Write the contracts**
+- [x] **Step 4: Write the contracts**
 
 `src/Contracts/OAuthProviderInterface.php`:
 ```php
@@ -327,12 +327,12 @@ interface CaptchaProviderInterface
 }
 ```
 
-- [ ] **Step 5: Run tests to verify they pass**
+- [x] **Step 5: Run tests to verify they pass**
 
 Run: `composer test`
 Expected: PASS (all tests).
 
-- [ ] **Step 6: Commit**
+- [x] **Step 6: Commit**
 
 ```bash
 git add src/Support src/Contracts tests/Unit/DtoTest.php
@@ -351,7 +351,7 @@ git commit -m "feat: readonly DTOs and provider contracts"
 - Consumes: `CaptchaResponse` from Task 2.
 - Produces: `AuthException extends \Exception`; `OAuthException extends AuthException`; `ConfigurationException extends AuthException` with `static missing(string $key): self`; `TurnstileException extends AuthException` with `__construct(CaptchaResponse $response, string $message = 'Turnstile verification failed.')` exposing `public readonly CaptchaResponse $response`.
 
-- [ ] **Step 1: Write failing tests `tests/Unit/ExceptionsTest.php`**
+- [x] **Step 1: Write failing tests `tests/Unit/ExceptionsTest.php`**
 
 ```php
 <?php
@@ -380,12 +380,12 @@ it('carries the captcha response on turnstile failure', function () {
 });
 ```
 
-- [ ] **Step 2: Run tests to verify they fail**
+- [x] **Step 2: Run tests to verify they fail**
 
 Run: `vendor/bin/pest tests/Unit/ExceptionsTest.php`
 Expected: FAIL — class not found.
 
-- [ ] **Step 3: Write the exceptions**
+- [x] **Step 3: Write the exceptions**
 
 `src/Exceptions/AuthException.php`:
 ```php
@@ -443,12 +443,12 @@ class TurnstileException extends AuthException
 }
 ```
 
-- [ ] **Step 4: Run tests to verify they pass**
+- [x] **Step 4: Run tests to verify they pass**
 
 Run: `composer test`
 Expected: PASS.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add src/Exceptions tests/Unit/ExceptionsTest.php
@@ -467,7 +467,7 @@ git commit -m "feat: exception hierarchy"
 **Interfaces:**
 - Produces: merged config under key `appsbd-auth`; publish tag `appsbd-auth-config`.
 
-- [ ] **Step 1: Write failing tests `tests/Feature/ServiceProviderConfigTest.php`**
+- [x] **Step 1: Write failing tests `tests/Feature/ServiceProviderConfigTest.php`**
 
 ```php
 <?php
@@ -487,12 +487,12 @@ it('registers the config as publishable under the appsbd-auth-config tag', funct
 });
 ```
 
-- [ ] **Step 2: Run tests to verify they fail**
+- [x] **Step 2: Run tests to verify they fail**
 
 Run: `vendor/bin/pest tests/Feature/ServiceProviderConfigTest.php`
 Expected: FAIL — config values are null / publish paths empty.
 
-- [ ] **Step 3: Write `config/appsbd-auth.php`**
+- [x] **Step 3: Write `config/appsbd-auth.php`**
 
 ```php
 <?php
@@ -516,7 +516,7 @@ return [
 ];
 ```
 
-- [ ] **Step 4: Update the provider**
+- [x] **Step 4: Update the provider**
 
 Replace `register()` and `boot()` in `src/Providers/AuthServiceProvider.php`:
 ```php
@@ -533,12 +533,12 @@ Replace `register()` and `boot()` in `src/Providers/AuthServiceProvider.php`:
     }
 ```
 
-- [ ] **Step 5: Run tests to verify they pass**
+- [x] **Step 5: Run tests to verify they pass**
 
 Run: `composer test`
 Expected: PASS.
 
-- [ ] **Step 6: Commit**
+- [x] **Step 6: Commit**
 
 ```bash
 git add config src/Providers/AuthServiceProvider.php tests/Feature/ServiceProviderConfigTest.php
@@ -557,7 +557,7 @@ git commit -m "feat: package config with merge and publish support"
 - Consumes: `OAuthProviderInterface`, DTOs, `ConfigurationException`.
 - Produces: `GoogleOAuthService implements OAuthProviderInterface`, `__construct(array $config)`. Session key constant `appsbd-auth.google.state` (public const `STATE_SESSION_KEY`). Later tasks add the HTTP methods; this task stubs them to `throw new \BadMethodCallException('Not implemented yet.')`.
 
-- [ ] **Step 1: Write failing tests `tests/Feature/GoogleAuthorizationUrlTest.php`**
+- [x] **Step 1: Write failing tests `tests/Feature/GoogleAuthorizationUrlTest.php`**
 
 ```php
 <?php
@@ -615,12 +615,12 @@ it('throws a ConfigurationException naming the key when redirect is missing', fu
 })->throws(ConfigurationException::class, 'appsbd-auth.google.redirect');
 ```
 
-- [ ] **Step 2: Run tests to verify they fail**
+- [x] **Step 2: Run tests to verify they fail**
 
 Run: `vendor/bin/pest tests/Feature/GoogleAuthorizationUrlTest.php`
 Expected: FAIL — `GoogleOAuthService` not found.
 
-- [ ] **Step 3: Write `src/Services/GoogleOAuthService.php`**
+- [x] **Step 3: Write `src/Services/GoogleOAuthService.php`**
 
 ```php
 <?php
@@ -702,12 +702,12 @@ class GoogleOAuthService implements OAuthProviderInterface
 }
 ```
 
-- [ ] **Step 4: Run tests to verify they pass**
+- [x] **Step 4: Run tests to verify they pass**
 
 Run: `composer test`
 Expected: PASS.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add src/Services/GoogleOAuthService.php tests/Feature/GoogleAuthorizationUrlTest.php
@@ -726,7 +726,7 @@ git commit -m "feat: google authorization url generation with session state"
 - Consumes: `googleService()` helper already defined in `tests/Feature/GoogleAuthorizationUrlTest.php` (Pest loads all test files; reuse it — do NOT redefine).
 - Produces: working `getTokensFromCode`, `getUserFromAccessToken`, `refreshToken`, `revokeToken`; protected `mapTokens(array $data, ?string $fallbackRefreshToken = null): OAuthTokens`; protected `googleRequest(\Closure $call, string $context): \Illuminate\Http\Client\Response`.
 
-- [ ] **Step 1: Write failing tests `tests/Feature/GoogleTokenTest.php`**
+- [x] **Step 1: Write failing tests `tests/Feature/GoogleTokenTest.php`**
 
 ```php
 <?php
@@ -831,12 +831,12 @@ it('throws OAuthException when the token response has no access_token', function
 })->throws(OAuthException::class);
 ```
 
-- [ ] **Step 2: Run tests to verify they fail**
+- [x] **Step 2: Run tests to verify they fail**
 
 Run: `vendor/bin/pest tests/Feature/GoogleTokenTest.php`
 Expected: FAIL — `BadMethodCallException: Not implemented yet.`
 
-- [ ] **Step 3: Replace the stubs in `src/Services/GoogleOAuthService.php`**
+- [x] **Step 3: Replace the stubs in `src/Services/GoogleOAuthService.php`**
 
 Add imports at the top of the file:
 ```php
@@ -940,12 +940,12 @@ Replace the four stub methods and add helpers:
 
 Note: `previous:` named argument works because `OAuthException` inherits `\Exception::__construct(string $message = "", int $code = 0, ?Throwable $previous = null)` — pass it as `new OAuthException($msg, previous: $e)`.
 
-- [ ] **Step 4: Run tests to verify they pass**
+- [x] **Step 4: Run tests to verify they pass**
 
 Run: `composer test`
 Expected: PASS.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add src/Services/GoogleOAuthService.php tests/Feature/GoogleTokenTest.php
@@ -965,7 +965,7 @@ git commit -m "feat: google token exchange, userinfo, refresh, revoke with error
 - Produces: `GoogleLoginSucceeded(OAuthUser $user, OAuthTokens $tokens)` (public readonly props); `GoogleLoginFailed(string $reason, ?\Throwable $exception = null)`; `redirect(?string $state = null, array $scopes = []): \Illuminate\Http\RedirectResponse`; `callback(?string $code = null, ?string $state = null): array{user: OAuthUser, tokens: OAuthTokens}`.
 - State rules in `callback()`: `$state` (param or request query fallback) is the value returned by Google. If a session state exists it must `hash_equals` the returned state (session state is pulled/forgotten either way); if no session state exists, an explicitly passed `$state` param bypasses validation (stateless mode); if neither exists → `OAuthException`.
 
-- [ ] **Step 1: Write failing tests `tests/Feature/GoogleCallbackTest.php`**
+- [x] **Step 1: Write failing tests `tests/Feature/GoogleCallbackTest.php`**
 
 ```php
 <?php
@@ -1059,12 +1059,12 @@ it('callback() fires GoogleLoginFailed when the token exchange fails', function 
 });
 ```
 
-- [ ] **Step 2: Run tests to verify they fail**
+- [x] **Step 2: Run tests to verify they fail**
 
 Run: `vendor/bin/pest tests/Feature/GoogleCallbackTest.php`
 Expected: FAIL — events/methods missing.
 
-- [ ] **Step 3: Write the events**
+- [x] **Step 3: Write the events**
 
 `src/Events/GoogleLoginSucceeded.php`:
 ```php
@@ -1101,7 +1101,7 @@ final class GoogleLoginFailed
 }
 ```
 
-- [ ] **Step 4: Add `redirect()` and `callback()` to `GoogleOAuthService`**
+- [x] **Step 4: Add `redirect()` and `callback()` to `GoogleOAuthService`**
 
 Add imports:
 ```php
@@ -1154,12 +1154,12 @@ Add methods:
     }
 ```
 
-- [ ] **Step 5: Run tests to verify they pass**
+- [x] **Step 5: Run tests to verify they pass**
 
 Run: `composer test`
 Expected: PASS.
 
-- [ ] **Step 6: Commit**
+- [x] **Step 6: Commit**
 
 ```bash
 git add src/Events src/Services/GoogleOAuthService.php tests/Feature/GoogleCallbackTest.php
@@ -1177,7 +1177,7 @@ git commit -m "feat: google redirect/callback conveniences with login events"
 **Interfaces:**
 - Produces: `TurnstileService implements CaptchaProviderInterface`, `__construct(array $config)`; `TurnstileVerified(CaptchaResponse $response)`; `TurnstileFailed(CaptchaResponse $response)` (public readonly props).
 
-- [ ] **Step 1: Write failing tests `tests/Feature/TurnstileServiceTest.php`**
+- [x] **Step 1: Write failing tests `tests/Feature/TurnstileServiceTest.php`**
 
 ```php
 <?php
@@ -1282,12 +1282,12 @@ it('throws ConfigurationException when secret is missing', function () {
 })->throws(ConfigurationException::class, 'appsbd-auth.turnstile.secret');
 ```
 
-- [ ] **Step 2: Run tests to verify they fail**
+- [x] **Step 2: Run tests to verify they fail**
 
 Run: `vendor/bin/pest tests/Feature/TurnstileServiceTest.php`
 Expected: FAIL — classes not found.
 
-- [ ] **Step 3: Write the events**
+- [x] **Step 3: Write the events**
 
 `src/Events/TurnstileVerified.php`:
 ```php
@@ -1321,7 +1321,7 @@ final class TurnstileFailed
 }
 ```
 
-- [ ] **Step 4: Write `src/Services/TurnstileService.php`**
+- [x] **Step 4: Write `src/Services/TurnstileService.php`**
 
 ```php
 <?php
@@ -1396,12 +1396,12 @@ class TurnstileService implements CaptchaProviderInterface
 }
 ```
 
-- [ ] **Step 5: Run tests to verify they pass**
+- [x] **Step 5: Run tests to verify they pass**
 
 Run: `composer test`
 Expected: PASS.
 
-- [ ] **Step 6: Commit**
+- [x] **Step 6: Commit**
 
 ```bash
 git add src/Services/TurnstileService.php src/Events tests/Feature/TurnstileServiceTest.php
@@ -1420,7 +1420,7 @@ git commit -m "feat: turnstile verification service with events"
 **Interfaces:**
 - Produces: container singletons `GoogleOAuthService` / `TurnstileService`, aliased to `OAuthProviderInterface` / `CaptchaProviderInterface`; facades `Appsbd\Auth\Facades\GoogleOAuth` and `Appsbd\Auth\Facades\Turnstile` accessing those services; testbench aliases `GoogleOAuth` / `Turnstile`.
 
-- [ ] **Step 1: Write failing tests `tests/Feature/ContainerTest.php`**
+- [x] **Step 1: Write failing tests `tests/Feature/ContainerTest.php`**
 
 ```php
 <?php
@@ -1453,12 +1453,12 @@ it('registers the facade aliases', function () {
 });
 ```
 
-- [ ] **Step 2: Run tests to verify they fail**
+- [x] **Step 2: Run tests to verify they fail**
 
 Run: `vendor/bin/pest tests/Feature/ContainerTest.php`
 Expected: FAIL — binding resolution / facades missing.
 
-- [ ] **Step 3: Write the facades**
+- [x] **Step 3: Write the facades**
 
 `src/Facades/GoogleOAuth.php`:
 ```php
@@ -1513,7 +1513,7 @@ class Turnstile extends Facade
 }
 ```
 
-- [ ] **Step 4: Register bindings in the provider and aliases in TestCase**
+- [x] **Step 4: Register bindings in the provider and aliases in TestCase**
 
 In `AuthServiceProvider::register()`, after `mergeConfigFrom`, add (with imports for the two services and two contracts):
 ```php
@@ -1541,12 +1541,12 @@ In `tests/TestCase.php` add:
 
 Note: the facade test sets config *before* first resolution, so the singleton picks up the values — keep that ordering in any new tests.
 
-- [ ] **Step 5: Run tests to verify they pass**
+- [x] **Step 5: Run tests to verify they pass**
 
 Run: `composer test`
 Expected: PASS.
 
-- [ ] **Step 6: Commit**
+- [x] **Step 6: Commit**
 
 ```bash
 git add src/Facades src/Providers/AuthServiceProvider.php tests/TestCase.php tests/Feature/ContainerTest.php
@@ -1566,7 +1566,7 @@ git commit -m "feat: container singletons and facades"
 - Consumes: `CaptchaProviderInterface` (constructor-injected).
 - Produces: middleware alias `turnstile`; on failure JSON 422 `{message, errors: {<input_name>: [...]}}` when `expectsJson()`, else redirect back with validation error under the input name key.
 
-- [ ] **Step 1: Write failing tests `tests/Feature/MiddlewareTest.php`**
+- [x] **Step 1: Write failing tests `tests/Feature/MiddlewareTest.php`**
 
 ```php
 <?php
@@ -1616,12 +1616,12 @@ it('reads the token from a configurable input name', function () {
 });
 ```
 
-- [ ] **Step 2: Run tests to verify they fail**
+- [x] **Step 2: Run tests to verify they fail**
 
 Run: `vendor/bin/pest tests/Feature/MiddlewareTest.php`
 Expected: FAIL — middleware alias `turnstile` not defined.
 
-- [ ] **Step 3: Write `src/Http/Middleware/VerifyTurnstile.php`**
+- [x] **Step 3: Write `src/Http/Middleware/VerifyTurnstile.php`**
 
 ```php
 <?php
@@ -1664,19 +1664,19 @@ class VerifyTurnstile
 }
 ```
 
-- [ ] **Step 4: Register the alias in `AuthServiceProvider::boot()`**
+- [x] **Step 4: Register the alias in `AuthServiceProvider::boot()`**
 
 Add (import `VerifyTurnstile`):
 ```php
         $this->app['router']->aliasMiddleware('turnstile', VerifyTurnstile::class);
 ```
 
-- [ ] **Step 5: Run tests to verify they pass**
+- [x] **Step 5: Run tests to verify they pass**
 
 Run: `composer test`
 Expected: PASS.
 
-- [ ] **Step 6: Commit**
+- [x] **Step 6: Commit**
 
 ```bash
 git add src/Http src/Providers/AuthServiceProvider.php tests/Feature/MiddlewareTest.php
@@ -1695,7 +1695,7 @@ git commit -m "feat: turnstile middleware with json and redirect failure modes"
 **Interfaces:**
 - Produces: `TurnstileRule implements Illuminate\Contracts\Validation\ValidationRule`; string rule `'turnstile'` registered via `Validator::extend`. Both resolve `CaptchaProviderInterface` from the container and verify with `request()->ip()`.
 
-- [ ] **Step 1: Write failing tests `tests/Feature/ValidationRuleTest.php`**
+- [x] **Step 1: Write failing tests `tests/Feature/ValidationRuleTest.php`**
 
 ```php
 <?php
@@ -1732,12 +1732,12 @@ it('works as the string rule "turnstile"', function () {
 });
 ```
 
-- [ ] **Step 2: Run tests to verify they fail**
+- [x] **Step 2: Run tests to verify they fail**
 
 Run: `vendor/bin/pest tests/Feature/ValidationRuleTest.php`
 Expected: FAIL — rule class/string rule missing.
 
-- [ ] **Step 3: Write `src/Validation/TurnstileRule.php`**
+- [x] **Step 3: Write `src/Validation/TurnstileRule.php`**
 
 ```php
 <?php
@@ -1761,7 +1761,7 @@ class TurnstileRule implements ValidationRule
 }
 ```
 
-- [ ] **Step 4: Register the string rule in `AuthServiceProvider::boot()`**
+- [x] **Step 4: Register the string rule in `AuthServiceProvider::boot()`**
 
 Add (import `Illuminate\Support\Facades\Validator` and `CaptchaProviderInterface`):
 ```php
@@ -1772,12 +1772,12 @@ Add (import `Illuminate\Support\Facades\Validator` and `CaptchaProviderInterface
         }, 'The :attribute field failed captcha verification.');
 ```
 
-- [ ] **Step 5: Run tests to verify they pass**
+- [x] **Step 5: Run tests to verify they pass**
 
 Run: `composer test`
 Expected: PASS.
 
-- [ ] **Step 6: Commit**
+- [x] **Step 6: Commit**
 
 ```bash
 git add src/Validation src/Providers/AuthServiceProvider.php tests/Feature/ValidationRuleTest.php
@@ -1791,7 +1791,7 @@ git commit -m "feat: turnstile validation rule (object and string forms)"
 **Files:**
 - Create: `.github/workflows/tests.yml`
 
-- [ ] **Step 1: Write the workflow**
+- [x] **Step 1: Write the workflow**
 
 ```yaml
 name: tests
@@ -1834,11 +1834,11 @@ jobs:
         run: composer test
 ```
 
-- [ ] **Step 2: Validate locally**
+- [x] **Step 2: Validate locally**
 
 Run: `composer test` (full suite still green) and confirm the YAML parses: `php -r "echo 'ok';"` isn't enough — just visually confirm indentation or run any YAML linter if available.
 
-- [ ] **Step 3: Commit**
+- [x] **Step 3: Commit**
 
 ```bash
 git add .github/workflows/tests.yml
@@ -1852,7 +1852,7 @@ git commit -m "ci: test matrix php 8.3/8.4 x laravel 12/13"
 **Files:**
 - Create: `README.md`, `CHANGELOG.md`, `CONTRIBUTING.md`, `SECURITY.md`
 
-- [ ] **Step 1: Write `README.md`**
+- [x] **Step 1: Write `README.md`**
 
 Sections (write complete prose for each):
 1. Title + one-line description + badges placeholder-free (just title/description; no fake badge URLs).
@@ -1865,7 +1865,7 @@ Sections (write complete prose for each):
 8. **Testing** — `composer test`.
 9. **License** — MIT.
 
-- [ ] **Step 2: Write `CHANGELOG.md`**
+- [x] **Step 2: Write `CHANGELOG.md`**
 
 ```markdown
 # Changelog
@@ -1883,15 +1883,15 @@ All notable changes to `appsbd/auth` are documented here. Follows [Keep a Change
 - Publishable config, full documentation set including Vue 3 + Sanctum integration guide.
 ```
 
-- [ ] **Step 3: Write `CONTRIBUTING.md`**
+- [x] **Step 3: Write `CONTRIBUTING.md`**
 
 Content: fork/branch/PR flow; run `composer install` and `composer test`; all changes need tests (Pest); follow PSR-12; keep `CHANGELOG.md` updated; no breaking changes to `Contracts/` in 1.x; conventional commit style (`feat:`, `fix:`, `docs:`, `ci:`).
 
-- [ ] **Step 4: Write `SECURITY.md`**
+- [x] **Step 4: Write `SECURITY.md`**
 
 Content: supported versions table (1.x — supported); report vulnerabilities privately to `support@appsbd.com`, do not open public issues for security reports; response within 7 days; scope notes (this package handles OAuth secrets and captcha secrets — never log them).
 
-- [ ] **Step 5: Verify and commit**
+- [x] **Step 5: Verify and commit**
 
 Run: `composer test` (still green — docs don't affect code).
 ```bash
@@ -1908,31 +1908,31 @@ git commit -m "docs: root documentation set"
 
 Each file is complete standalone markdown. Required content per file (write real prose + runnable code, matching the actual implemented signatures):
 
-- [ ] **Step 1: `docs/Installation.md`** — composer require, PHP/Laravel requirements, auto-discovery (provider + aliases + middleware + rule registered automatically), publish command with tag `appsbd-auth-config`, env var checklist for both providers with example values, Google Cloud Console setup pointers (create OAuth client, authorized redirect URI must equal `APPSBD_GOOGLE_REDIRECT_URI`), Cloudflare dashboard pointers (create Turnstile widget, copy site key + secret).
+- [x] **Step 1: `docs/Installation.md`** — composer require, PHP/Laravel requirements, auto-discovery (provider + aliases + middleware + rule registered automatically), publish command with tag `appsbd-auth-config`, env var checklist for both providers with example values, Google Cloud Console setup pointers (create OAuth client, authorized redirect URI must equal `APPSBD_GOOGLE_REDIRECT_URI`), Cloudflare dashboard pointers (create Turnstile widget, copy site key + secret).
 
-- [ ] **Step 2: `docs/Configuration.md`** — full annotated copy of `config/appsbd-auth.php`; table of every key: type, env var, default, which exception is thrown when missing (`ConfigurationException` naming e.g. `appsbd-auth.google.client_id`); note that `scopes` and `input_name` are config-file-only (no env var).
+- [x] **Step 2: `docs/Configuration.md`** — full annotated copy of `config/appsbd-auth.php`; table of every key: type, env var, default, which exception is thrown when missing (`ConfigurationException` naming e.g. `appsbd-auth.google.client_id`); note that `scopes` and `input_name` are config-file-only (no env var).
 
-- [ ] **Step 3: `docs/GoogleOAuth.md`** — the full `OAuthProviderInterface` API with signatures; state handling section (session default: random 40-char state stored under `appsbd-auth.google.state`, validated and cleared in `callback()`; stateless override: pass `$state` to both `generateAuthorizationUrl()` and `callback()`); `redirect()`/`callback()` conveniences with a complete controller example; events (`GoogleLoginSucceeded`, `GoogleLoginFailed`) with payload shapes; error mapping table (`OAuthException` for HTTP/token/state errors, `ConfigurationException` for config).
+- [x] **Step 3: `docs/GoogleOAuth.md`** — the full `OAuthProviderInterface` API with signatures; state handling section (session default: random 40-char state stored under `appsbd-auth.google.state`, validated and cleared in `callback()`; stateless override: pass `$state` to both `generateAuthorizationUrl()` and `callback()`); `redirect()`/`callback()` conveniences with a complete controller example; events (`GoogleLoginSucceeded`, `GoogleLoginFailed`) with payload shapes; error mapping table (`OAuthException` for HTTP/token/state errors, `ConfigurationException` for config).
 
-- [ ] **Step 4: `docs/Turnstile.md`** — `verify()` vs `verifyOrFail()` semantics; `CaptchaResponse` field reference; the network-failure guarantee (`internal-error`, never throws from `verify`); events; frontend widget snippet (plain HTML `<div class="cf-turnstile" data-sitekey="...">` + script tag) with pointer to VueIntegration.md for SPA usage.
+- [x] **Step 4: `docs/Turnstile.md`** — `verify()` vs `verifyOrFail()` semantics; `CaptchaResponse` field reference; the network-failure guarantee (`internal-error`, never throws from `verify`); events; frontend widget snippet (plain HTML `<div class="cf-turnstile" data-sitekey="...">` + script tag) with pointer to VueIntegration.md for SPA usage.
 
-- [ ] **Step 5: `docs/Middleware.md`** — applying `->middleware('turnstile')` to routes/groups; failure behavior (JSON 422 payload example with `errors` object; redirect-back with `$errors` for Blade); changing `input_name`; note the middleware verifies on every request it guards (tokens are single-use — don't apply it to GET pages).
+- [x] **Step 5: `docs/Middleware.md`** — applying `->middleware('turnstile')` to routes/groups; failure behavior (JSON 422 payload example with `errors` object; redirect-back with `$errors` for Blade); changing `input_name`; note the middleware verifies on every request it guards (tokens are single-use — don't apply it to GET pages).
 
-- [ ] **Step 6: `docs/Validation.md`** — string rule `'turnstile'` and object rule `new TurnstileRule` examples in a FormRequest; custom error message via `messages()`; when to prefer rule vs middleware (rule composes with other validation, middleware rejects before validation runs).
+- [x] **Step 6: `docs/Validation.md`** — string rule `'turnstile'` and object rule `new TurnstileRule` examples in a FormRequest; custom error message via `messages()`; when to prefer rule vs middleware (rule composes with other validation, middleware rejects before validation runs).
 
-- [ ] **Step 7: `docs/Facades.md`** — `GoogleOAuth` and `Turnstile` facade method lists; note they're optional sugar over the container singletons; testability note (`Http::fake()` still works under facades because services use the HTTP client).
+- [x] **Step 7: `docs/Facades.md`** — `GoogleOAuth` and `Turnstile` facade method lists; note they're optional sugar over the container singletons; testability note (`Http::fake()` still works under facades because services use the HTTP client).
 
-- [ ] **Step 8: `docs/DependencyInjection.md`** — constructor injection of `OAuthProviderInterface` / `CaptchaProviderInterface` in controllers/listeners with code example; singleton lifecycle (config is read at first resolution); how to swap implementations in tests (`$this->app->instance(...)`).
+- [x] **Step 8: `docs/DependencyInjection.md`** — constructor injection of `OAuthProviderInterface` / `CaptchaProviderInterface` in controllers/listeners with code example; singleton lifecycle (config is read at first resolution); how to swap implementations in tests (`$this->app->instance(...)`).
 
-- [ ] **Step 9: `docs/Testing.md`** — how consumers test code using this package: `Http::fake()` recipes for the Google token/userinfo endpoints and Turnstile siteverify (copy the fake payloads from this package's own tests), `Event::fake()` for login events, faking `CaptchaProviderInterface` with `$this->app->instance()`.
+- [x] **Step 9: `docs/Testing.md`** — how consumers test code using this package: `Http::fake()` recipes for the Google token/userinfo endpoints and Turnstile siteverify (copy the fake payloads from this package's own tests), `Event::fake()` for login events, faking `CaptchaProviderInterface` with `$this->app->instance()`.
 
-- [ ] **Step 10: `docs/Publishing.md`** — releasing the package: tag `v1.0.0`, Packagist submission, semver policy (contracts frozen in 1.x), how future providers get added (new service implementing `OAuthProviderInterface`/`CaptchaProviderInterface` + config block + facade — no breaking changes).
+- [x] **Step 10: `docs/Publishing.md`** — releasing the package: tag `v1.0.0`, Packagist submission, semver policy (contracts frozen in 1.x), how future providers get added (new service implementing `OAuthProviderInterface`/`CaptchaProviderInterface` + config block + facade — no breaking changes).
 
-- [ ] **Step 11: `docs/UpgradeGuide.md`** — states there is nothing to upgrade yet (1.0.0 is the first release) and documents the policy: minor releases never break `Contracts/`, config keys are only added, deprecations get one minor release of warning.
+- [x] **Step 11: `docs/UpgradeGuide.md`** — states there is nothing to upgrade yet (1.0.0 is the first release) and documents the policy: minor releases never break `Contracts/`, config keys are only added, deprecations get one minor release of warning.
 
-- [ ] **Step 12: `docs/Examples.md`** — index page linking each file in `examples/` with a one-paragraph description of what it shows (files are created in Task 15).
+- [x] **Step 12: `docs/Examples.md`** — index page linking each file in `examples/` with a one-paragraph description of what it shows (files are created in Task 15).
 
-- [ ] **Step 13: Verify and commit**
+- [x] **Step 13: Verify and commit**
 
 Run: `composer test` (still green).
 ```bash
@@ -1947,7 +1947,7 @@ git commit -m "docs: package guides"
 **Files:**
 - Create: `docs/VueIntegration.md`, `examples/GoogleAuthController.php`, `examples/TurnstileLoginController.php`, `examples/HandleGoogleLogin.php`, `examples/routes.php`, `examples/TurnstileWidget.vue`
 
-- [ ] **Step 1: Write `examples/TurnstileWidget.vue`** (also embedded verbatim in VueIntegration.md)
+- [x] **Step 1: Write `examples/TurnstileWidget.vue`** (also embedded verbatim in VueIntegration.md)
 
 ```vue
 <script setup>
@@ -2006,7 +2006,7 @@ onBeforeUnmount(() => {
 </template>
 ```
 
-- [ ] **Step 2: Write `examples/GoogleAuthController.php`**
+- [x] **Step 2: Write `examples/GoogleAuthController.php`**
 
 ```php
 <?php
@@ -2042,7 +2042,7 @@ class GoogleAuthController extends Controller
 }
 ```
 
-- [ ] **Step 3: Write `examples/HandleGoogleLogin.php`**
+- [x] **Step 3: Write `examples/HandleGoogleLogin.php`**
 
 ```php
 <?php
@@ -2075,7 +2075,7 @@ class HandleGoogleLogin
 }
 ```
 
-- [ ] **Step 4: Write `examples/TurnstileLoginController.php`**
+- [x] **Step 4: Write `examples/TurnstileLoginController.php`**
 
 ```php
 <?php
@@ -2113,7 +2113,7 @@ class TurnstileLoginController extends Controller
 }
 ```
 
-- [ ] **Step 5: Write `examples/routes.php`**
+- [x] **Step 5: Write `examples/routes.php`**
 
 ```php
 <?php
@@ -2129,7 +2129,7 @@ Route::get('/auth/google/callback', [GoogleAuthController::class, 'callback'])->
 Route::post('/login', [TurnstileLoginController::class, 'login'])->name('login');
 ```
 
-- [ ] **Step 6: Write `docs/VueIntegration.md`** with these sections, complete and runnable:
+- [x] **Step 6: Write `docs/VueIntegration.md`** with these sections, complete and runnable:
 
 1. **Prerequisites (Sanctum cookie auth)** — `SANCTUM_STATEFUL_DOMAINS`, `SESSION_DOMAIN`, axios `withCredentials = true` + `withXSRFToken = true`, hit `/sanctum/csrf-cookie` before the first POST; code for an `api.js` axios instance.
 2. **TurnstileWidget component** — the full component from Step 1, plus usage:
@@ -2143,7 +2143,7 @@ Route::post('/login', [TurnstileLoginController::class, 'login'])->name('login')
 7. **GoogleLoginSucceeded listener** — inline `examples/HandleGoogleLogin.php` and show `Event::listen(GoogleLoginSucceeded::class, HandleGoogleLogin::class)` registration in `AppServiceProvider::boot()`.
 8. **Troubleshooting** — table: 401 after login (stateful domains/cookie domain mismatch), 419 (missing CSRF cookie call / `withXSRFToken`), `OAuthException` state mismatch (session driver, callback URL mismatch, opening callback in a different browser context), widget not rendering (script blocked, wrong site key, container removed before render), CORS (use same top-level domain; Sanctum SPA auth is cookie-based, not token-based).
 
-- [ ] **Step 7: Verify and commit**
+- [x] **Step 7: Verify and commit**
 
 Run: `composer test` (still green).
 ```bash
@@ -2155,6 +2155,6 @@ git commit -m "docs: vue 3 + sanctum integration guide and runnable examples"
 
 ## Final verification (after all tasks)
 
-- [ ] `composer test` — full suite green.
-- [ ] Spec checklist sweep: every item in the spec's Architecture tree exists; every row of the error-handling table has a test; all 13 docs files + root docs exist.
-- [ ] `git log --oneline` shows one commit per task, no attribution trailers.
+- [x] `composer test` — full suite green.
+- [x] Spec checklist sweep: every item in the spec's Architecture tree exists; every row of the error-handling table has a test; all 13 docs files + root docs exist.
+- [x] `git log --oneline` shows one commit per task, no attribution trailers.
