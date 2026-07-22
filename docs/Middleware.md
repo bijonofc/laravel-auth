@@ -1,0 +1,54 @@
+# Middleware
+
+The package registers the route middleware alias `turnstile` (`Appsbd\Auth\Http\Middleware\VerifyTurnstile`).
+
+## Usage
+
+```php
+Route::post('/login', [LoginController::class, 'login'])->middleware('turnstile');
+
+Route::middleware('turnstile')->group(function () {
+    Route::post('/register', RegisterController::class);
+    Route::post('/contact', ContactController::class);
+});
+```
+
+The middleware reads the token from the request input named by `appsbd-auth.turnstile.input_name` (default `cf-turnstile-response`), verifies it with the client IP, and:
+
+- **Success** → passes the request through.
+- **Failure, JSON request** (`expectsJson()`) → responds `422`:
+
+  ```json
+  {
+      "message": "Captcha verification failed. Please try again.",
+      "errors": {
+          "cf-turnstile-response": ["Captcha verification failed. Please try again."]
+      }
+  }
+  ```
+
+  This is the standard Laravel validation error shape, so SPA error handling that already understands 422 responses works unchanged.
+
+- **Failure, web request** → redirects back with old input (minus the token) and a validation error under the input name key:
+
+  ```blade
+  @error('cf-turnstile-response')
+      <p class="error">{{ $message }}</p>
+  @enderror
+  ```
+
+## Changing the input name
+
+```php
+// config/appsbd-auth.php
+'turnstile' => [
+    'input_name' => 'captcha_token',
+],
+```
+
+Both the middleware and anything reading the config follow automatically. Keep your frontend widget's response field in sync.
+
+## Caveats
+
+- Turnstile tokens are **single-use**. Apply the middleware to state-changing POST routes only — never to GET pages, and don't stack it on a route whose controller *also* validates with the `turnstile` rule (the second check would always fail).
+- Choose middleware vs [validation rule](Validation.md): middleware rejects before your controller runs; the rule composes with the rest of your form validation and reports alongside other field errors.
