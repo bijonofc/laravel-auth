@@ -3,11 +3,14 @@
 namespace Appsbd\Auth\Services;
 
 use Appsbd\Auth\Contracts\OAuthProviderInterface;
+use Appsbd\Auth\Events\GoogleLoginFailed;
+use Appsbd\Auth\Events\GoogleLoginSucceeded;
 use Appsbd\Auth\Exceptions\ConfigurationException;
 use Appsbd\Auth\Exceptions\OAuthException;
 use Appsbd\Auth\Support\OAuthTokens;
 use Appsbd\Auth\Support\OAuthUser;
 use Illuminate\Http\Client\Response;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Str;
 
@@ -45,6 +48,47 @@ class GoogleOAuthService implements OAuthProviderInterface
         ]);
 
         return self::AUTHORIZE_URL.'?'.$query;
+    }
+
+    public function redirect(?string $state = null, array $scopes = []): RedirectResponse
+    {
+        return new RedirectResponse($this->generateAuthorizationUrl($state, $scopes));
+    }
+
+    /**
+     * @return array{user: OAuthUser, tokens: OAuthTokens}
+     */
+    public function callback(?string $code = null, ?string $state = null): array
+    {
+        try {
+            $request = request();
+            $code ??= $request->query('code');
+            $returnedState = $state ?? $request->query('state');
+            $sessionState = session()->pull(self::STATE_SESSION_KEY);
+
+            if ($sessionState !== null) {
+                if (! is_string($returnedState) || ! hash_equals($sessionState, $returnedState)) {
+                    throw new OAuthException('OAuth state mismatch: the state returned by Google does not match the one stored in the session.');
+                }
+            } elseif ($state === null) {
+                throw new OAuthException('No OAuth state available: nothing stored in the session and none passed to callback().');
+            }
+
+            if (! is_string($code) || $code === '') {
+                throw new OAuthException('No authorization code was provided to callback().');
+            }
+
+            $tokens = $this->getTokensFromCode($code);
+            $user = $this->getUserFromAccessToken($tokens->accessToken);
+        } catch (\Throwable $e) {
+            event(new GoogleLoginFailed($e->getMessage(), $e));
+
+            throw $e;
+        }
+
+        event(new GoogleLoginSucceeded($user, $tokens));
+
+        return ['user' => $user, 'tokens' => $tokens];
     }
 
     public function getTokensFromCode(string $code): OAuthTokens
