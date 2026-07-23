@@ -1,6 +1,6 @@
 # Cloudflare Turnstile
 
-`Bijon\LaravelAuth\Services\TurnstileService` implements `Bijon\LaravelAuth\Contracts\CaptchaProviderInterface`. Resolve it via DI, `app(CaptchaProviderInterface::class)`, or the `Turnstile` facade.
+`Bijon\LaravelAuth\Services\TurnstileService` implements `Bijon\LaravelAuth\Contracts\CaptchaProviderInterface`. It is one provider of the shared [captcha system](Captcha.md) — resolve it via DI, `app(CaptchaProviderInterface::class)` (when detected as active), or the `Turnstile` facade.
 
 ## API
 
@@ -21,8 +21,11 @@ public function verifyOrFail(string $token, ?string $ip = null): CaptchaResponse
 | `challengedAt` | ?string | challenge timestamp (ISO 8601) |
 | `action` | ?string | the widget `action` value, if set |
 | `cdata` | ?string | custom data passed to the widget, if set |
+| `provider` | ?string | which provider produced the response — `turnstile` here |
+| `score` | ?float | reCAPTCHA v3 only; always `null` for Turnstile |
+| `raw` | array | the provider's untouched siteverify JSON body |
 
-`$response->failed()` is the inverse of `success`.
+`$response->failed()` is the inverse of `success`. The same DTO is returned by every [captcha provider](Captcha.md#unified-response).
 
 ## Failure semantics
 
@@ -39,6 +42,8 @@ public function verifyOrFail(string $token, ?string $ip = null): CaptchaResponse
 |---|---|---|
 | `Bijon\LaravelAuth\Events\TurnstileVerified` | `CaptchaResponse $response` | verification succeeded |
 | `Bijon\LaravelAuth\Events\TurnstileFailed` | `CaptchaResponse $response` | verification failed (including network failures) |
+
+The provider-agnostic `CaptchaVerified` / `CaptchaFailed` events (which the Turnstile events extend) fire alongside these — listen to those to cover every provider at once. See [Captcha events](Captcha.md#events-and-exceptions).
 
 ## Frontend widget (plain HTML)
 

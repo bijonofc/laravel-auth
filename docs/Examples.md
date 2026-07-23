@@ -21,3 +21,7 @@ The `routes/web.php` entries wiring the two controllers: Google redirect + callb
 ## [`TurnstileWidget.vue`](../examples/TurnstileWidget.vue)
 
 A reusable Vue 3 `<TurnstileWidget>` component: loads the Cloudflare script once (explicit render mode), renders the widget, emits `verified` with the token, auto-resets on expiry, and exposes `reset()` for after failed submits. Fully documented in [VueIntegration](VueIntegration.md).
+
+## [`RecaptchaV3.vue`](../examples/RecaptchaV3.vue)
+
+A reusable Vue 3 component for the invisible Google reCAPTCHA v3 flow: loads Google's script once, emits `ready`, and exposes `execute(action)` which resolves with a fresh single-use token — call it at submit time and post the token as `g-recaptcha-response`. No widget, no reset dance. Fully documented in [Recaptcha](Recaptcha.md#vue-3-component).

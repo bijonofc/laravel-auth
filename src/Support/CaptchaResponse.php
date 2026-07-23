@@ -11,6 +11,9 @@ final readonly class CaptchaResponse
         public ?string $challengedAt = null,
         public ?string $action = null,
         public ?string $cdata = null,
+        public ?string $provider = null,
+        public ?float $score = null,
+        public array $raw = [],
     ) {
     }
 

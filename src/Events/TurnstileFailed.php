@@ -2,11 +2,6 @@
 
 namespace Bijon\LaravelAuth\Events;
 
-use Bijon\LaravelAuth\Support\CaptchaResponse;
-
-final class TurnstileFailed
+final class TurnstileFailed extends CaptchaFailed
 {
-    public function __construct(public readonly CaptchaResponse $response)
-    {
-    }
 }

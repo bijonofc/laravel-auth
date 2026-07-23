@@ -2,6 +2,8 @@
 
 End-to-end guide for the package's primary use case: a **Vue 3 SPA** talking to a **Laravel backend with Sanctum cookie (stateful) auth**, using Turnstile-protected login and Google sign-in.
 
+Using **Google reCAPTCHA v3** instead of Turnstile? Everything here applies except the widget — swap section 2/3 for the invisible [`<RecaptchaV3>` component and login form](Recaptcha.md#vue-3-component); the axios setup, Google login, backend routes, and listener are identical.
+
 ## 1. Prerequisites — Sanctum cookie auth
 
 Your SPA and API must share a top-level domain (e.g. `app.example.com` + `api.example.com`, or same origin). Configure:

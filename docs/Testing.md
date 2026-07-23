@@ -47,7 +47,7 @@ Http::fake(['challenges.cloudflare.com/*' => Http::response([
 ])]);
 ```
 
-With the pass fake in place, requests through the `turnstile` middleware or rule succeed:
+With the pass fake in place, requests through the `captcha`/`turnstile` middleware or rule succeed:
 
 ```php
 Http::fake(['challenges.cloudflare.com/*' => Http::response(['success' => true])]);
@@ -57,6 +57,28 @@ $this->postJson('/login', [
     'password' => 'secret',
     'cf-turnstile-response' => 'any-token',
 ])->assertOk();
+```
+
+## Faking Google reCAPTCHA v3
+
+```php
+// Pass (score above the configured minimum):
+Http::fake(['www.google.com/recaptcha/*' => Http::response(['success' => true, 'score' => 0.9])]);
+
+// Fail on score:
+Http::fake(['www.google.com/recaptcha/*' => Http::response(['success' => true, 'score' => 0.1])]);
+// -> failed response with error code 'low-score'
+
+// Fail on action (when laravel-auth.recaptcha.action is set to 'login'):
+Http::fake(['www.google.com/recaptcha/*' => Http::response([
+    'success' => true, 'score' => 0.9, 'action' => 'signup',
+])]);
+// -> failed response with error code 'action-mismatch'
+
+// Fail with Google's own codes:
+Http::fake(['www.google.com/recaptcha/*' => Http::response([
+    'success' => false, 'error-codes' => ['invalid-input-response'],
+])]);
 ```
 
 ## Faking events

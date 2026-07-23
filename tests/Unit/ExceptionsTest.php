@@ -1,6 +1,7 @@
 <?php
 
 use Bijon\LaravelAuth\Exceptions\AuthException;
+use Bijon\LaravelAuth\Exceptions\CaptchaException;
 use Bijon\LaravelAuth\Exceptions\ConfigurationException;
 use Bijon\LaravelAuth\Exceptions\OAuthException;
 use Bijon\LaravelAuth\Exceptions\TurnstileException;
@@ -21,4 +22,16 @@ it('carries the captcha response on turnstile failure', function () {
     $e = new TurnstileException($response);
     expect($e)->toBeInstanceOf(AuthException::class)
         ->and($e->response->errorCodes)->toBe(['timeout-or-duplicate']);
+});
+
+it('carries the captcha response on generic captcha failure', function () {
+    $response = new CaptchaResponse(success: false, errorCodes: ['low-score']);
+    $e = new CaptchaException($response);
+    expect($e)->toBeInstanceOf(AuthException::class)
+        ->and($e->response->errorCodes)->toBe(['low-score']);
+});
+
+it('keeps TurnstileException catchable as CaptchaException', function () {
+    $e = new TurnstileException(new CaptchaResponse(success: false));
+    expect($e)->toBeInstanceOf(CaptchaException::class);
 });

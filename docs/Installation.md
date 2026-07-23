@@ -14,9 +14,9 @@ composer require bijon/laravel-auth
 Package auto-discovery registers everything for you:
 
 - `Bijon\LaravelAuth\Providers\AuthServiceProvider`
-- Facade aliases `GoogleOAuth` and `Turnstile`
-- Route middleware alias `turnstile`
-- Validation rule `turnstile`
+- Facade aliases `Captcha`, `GoogleOAuth`, and `Turnstile`
+- Route middleware aliases `captcha` and `turnstile`
+- Validation rules `captcha` and `turnstile`
 
 ## Publish the config
 
@@ -34,11 +34,20 @@ LA_GOOGLE_CLIENT_ID=your-client-id.apps.googleusercontent.com
 LA_GOOGLE_CLIENT_SECRET=your-client-secret
 LA_GOOGLE_REDIRECT_URI=https://your-app.test/auth/google/callback
 
-# Cloudflare Turnstile
+# Captcha — configure ONE provider; the package auto-detects it.
+# Cloudflare Turnstile:
 LA_TURNSTILE_SITE_KEY=0x4AAAAAAA...
 LA_TURNSTILE_SECRET=0x4AAAAAAA...
 LA_TURNSTILE_TIMEOUT=10
+
+# ... or Google reCAPTCHA v3:
+LA_RECAPTCHA_SITE_KEY=6Lc...
+LA_RECAPTCHA_SECRET=6Lc...
+LA_RECAPTCHA_SCORE=0.5
+LA_RECAPTCHA_ACTION=login
 ```
+
+If both providers are configured, Turnstile wins; force one with `LA_CAPTCHA_PROVIDER=recaptcha`. See [Captcha](Captcha.md) for the detection rules.
 
 ## Google Cloud Console setup
 
@@ -53,4 +62,10 @@ LA_TURNSTILE_TIMEOUT=10
 2. Add your app's hostname(s) to the widget's allowed domains.
 3. Copy the **site key** (used by the frontend widget) and **secret key** (used by this package server-side) into your `.env`.
 
-Next: [Configuration](Configuration.md) · [GoogleOAuth](GoogleOAuth.md) · [Turnstile](Turnstile.md) · [VueIntegration](VueIntegration.md)
+## Google reCAPTCHA v3 setup
+
+1. Open the [reCAPTCHA admin console](https://www.google.com/recaptcha/admin) and register a new site with type **reCAPTCHA v3**.
+2. Add your app's domain(s).
+3. Copy the **site key** (used by the frontend script) and **secret key** (used by this package server-side) into your `.env`.
+
+Next: [Configuration](Configuration.md) · [GoogleOAuth](GoogleOAuth.md) · [Captcha](Captcha.md) · [Turnstile](Turnstile.md) · [Recaptcha](Recaptcha.md) · [VueIntegration](VueIntegration.md)

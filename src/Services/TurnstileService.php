@@ -2,73 +2,54 @@
 
 namespace Bijon\LaravelAuth\Services;
 
-use Bijon\LaravelAuth\Concerns\SendsSecureHttpRequests;
-use Bijon\LaravelAuth\Contracts\CaptchaProviderInterface;
 use Bijon\LaravelAuth\Events\TurnstileFailed;
 use Bijon\LaravelAuth\Events\TurnstileVerified;
-use Bijon\LaravelAuth\Exceptions\ConfigurationException;
+use Bijon\LaravelAuth\Exceptions\CaptchaException;
 use Bijon\LaravelAuth\Exceptions\TurnstileException;
 use Bijon\LaravelAuth\Support\CaptchaResponse;
 
-class TurnstileService implements CaptchaProviderInterface
+class TurnstileService extends AbstractCaptchaService
 {
-    use SendsSecureHttpRequests;
-
     protected const VERIFY_URL = 'https://challenges.cloudflare.com/turnstile/v0/siteverify';
 
-    public function __construct(protected array $config)
+    public function name(): string
     {
+        return 'turnstile';
     }
 
-    public function verify(string $token, ?string $ip = null): CaptchaResponse
+    protected function verifyUrl(): string
     {
-        $secret = $this->config['secret'] ?? null;
+        return self::VERIFY_URL;
+    }
 
-        if ($secret === null || $secret === '') {
-            throw ConfigurationException::missing('laravel-auth.turnstile.secret');
-        }
+    public function inputName(): string
+    {
+        return $this->config['input_name'] ?? 'cf-turnstile-response';
+    }
 
-        try {
-            $response = $this->http()
-                ->timeout((int) ($this->config['timeout'] ?? 10))
-                ->asForm()
-                ->post(self::VERIFY_URL, [
-                    'secret'   => $secret,
-                    'response' => $token,
-                    'remoteip' => $ip,
-                ]);
+    protected function mapResponse(array $data): CaptchaResponse
+    {
+        return new CaptchaResponse(
+            success: (bool) ($data['success'] ?? false),
+            errorCodes: $data['error-codes'] ?? [],
+            hostname: $data['hostname'] ?? null,
+            challengedAt: $data['challenge_ts'] ?? null,
+            action: $data['action'] ?? null,
+            cdata: $data['cdata'] ?? null,
+            provider: $this->name(),
+            raw: $data,
+        );
+    }
 
-            if ($response->failed()) {
-                $result = new CaptchaResponse(success: false, errorCodes: ['internal-error']);
-            } else {
-                $data = $response->json() ?? [];
-                $result = new CaptchaResponse(
-                    success: (bool) ($data['success'] ?? false),
-                    errorCodes: $data['error-codes'] ?? [],
-                    hostname: $data['hostname'] ?? null,
-                    challengedAt: $data['challenge_ts'] ?? null,
-                    action: $data['action'] ?? null,
-                    cdata: $data['cdata'] ?? null,
-                );
-            }
-        } catch (\Throwable $e) {
-            report($e);
-            $result = new CaptchaResponse(success: false, errorCodes: ['network-error']);
-        }
+    protected function dispatchEvents(CaptchaResponse $result): void
+    {
+        parent::dispatchEvents($result);
 
         event($result->success ? new TurnstileVerified($result) : new TurnstileFailed($result));
-
-        return $result;
     }
 
-    public function verifyOrFail(string $token, ?string $ip = null): CaptchaResponse
+    protected function failureException(CaptchaResponse $result): CaptchaException
     {
-        $result = $this->verify($token, $ip);
-
-        if ($result->failed()) {
-            throw new TurnstileException($result);
-        }
-
-        return $result;
+        return new TurnstileException($result);
     }
 }

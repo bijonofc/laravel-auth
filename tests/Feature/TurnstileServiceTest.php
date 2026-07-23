@@ -1,5 +1,7 @@
 <?php
 
+use Bijon\LaravelAuth\Events\CaptchaFailed;
+use Bijon\LaravelAuth\Events\CaptchaVerified;
 use Bijon\LaravelAuth\Events\TurnstileFailed;
 use Bijon\LaravelAuth\Events\TurnstileVerified;
 use Bijon\LaravelAuth\Exceptions\ConfigurationException;
@@ -123,3 +125,34 @@ it('verifyOrFail returns the response on success', function () {
 it('throws ConfigurationException when secret is missing', function () {
     turnstileService(['secret' => null])->verify('token');
 })->throws(ConfigurationException::class, 'laravel-auth.turnstile.secret');
+
+it('stamps responses with the provider name and raw payload', function () {
+    Http::fake([
+        'challenges.cloudflare.com/*' => Http::response(['success' => true, 'hostname' => 'app.test']),
+    ]);
+
+    $result = turnstileService()->verify('the-token');
+
+    expect($result->provider)->toBe('turnstile')
+        ->and($result->raw)->toBe(['success' => true, 'hostname' => 'app.test']);
+});
+
+it('also fires the provider-agnostic CaptchaVerified event on success', function () {
+    Http::fake(['challenges.cloudflare.com/*' => Http::response(['success' => true])]);
+    Event::fake();
+
+    turnstileService()->verify('good');
+
+    Event::assertDispatched(CaptchaVerified::class, fn ($e) => $e->response->provider === 'turnstile');
+    Event::assertDispatched(TurnstileVerified::class);
+});
+
+it('also fires the provider-agnostic CaptchaFailed event on failure', function () {
+    Http::fake(['challenges.cloudflare.com/*' => Http::response(['success' => false])]);
+    Event::fake();
+
+    turnstileService()->verify('bad');
+
+    Event::assertDispatched(CaptchaFailed::class, fn ($e) => $e->response->provider === 'turnstile');
+    Event::assertDispatched(TurnstileFailed::class);
+});

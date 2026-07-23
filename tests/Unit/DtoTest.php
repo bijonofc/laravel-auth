@@ -24,3 +24,20 @@ it('reports captcha failure state', function () {
         ->and($bad->failed())->toBeTrue()
         ->and($bad->errorCodes)->toBe(['invalid-input-response']);
 });
+
+it('carries provider, score, and raw payload with null defaults', function () {
+    $plain = new CaptchaResponse(success: true);
+    expect($plain->provider)->toBeNull()
+        ->and($plain->score)->toBeNull()
+        ->and($plain->raw)->toBe([]);
+
+    $scored = new CaptchaResponse(
+        success: true,
+        provider: 'recaptcha',
+        score: 0.9,
+        raw: ['success' => true, 'score' => 0.9],
+    );
+    expect($scored->provider)->toBe('recaptcha')
+        ->and($scored->score)->toBe(0.9)
+        ->and($scored->raw)->toBe(['success' => true, 'score' => 0.9]);
+});

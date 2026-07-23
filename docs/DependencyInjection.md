@@ -1,11 +1,13 @@
 # Dependency Injection
 
-The service provider binds both services as **singletons** and aliases the contracts to them:
+The service provider binds the services as **singletons** and resolves the contracts to them:
 
 | Contract | Implementation |
 |---|---|
 | `Bijon\LaravelAuth\Contracts\OAuthProviderInterface` | `Bijon\LaravelAuth\Services\GoogleOAuthService` |
-| `Bijon\LaravelAuth\Contracts\CaptchaProviderInterface` | `Bijon\LaravelAuth\Services\TurnstileService` |
+| `Bijon\LaravelAuth\Contracts\CaptchaProviderInterface` | the [auto-detected](Captcha.md#automatic-provider-detection) captcha provider (`TurnstileService`, `RecaptchaV3Service`, …) |
+
+`CaptchaProviderInterface` is a dynamic binding: detection runs on each resolution (the provider instances themselves stay singletons), so config changes always take effect. `CaptchaManager` is also a singleton you can inject directly for provider metadata (`detect()`, `siteKey()`, `inputName()`, `extend()`).
 
 Type-hint the contract anywhere the container resolves:
 

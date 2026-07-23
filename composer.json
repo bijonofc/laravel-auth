@@ -1,9 +1,9 @@
 {
     "name": "bijon/laravel-auth",
-    "description": "Authentication integrations for Laravel: Google OAuth2 and Cloudflare Turnstile.",
+    "description": "Authentication integrations for Laravel: Google OAuth2 and provider-based CAPTCHA verification (Cloudflare Turnstile, Google reCAPTCHA v3).",
     "type": "library",
     "license": "MIT",
-    "keywords": ["laravel", "authentication", "oauth", "google", "turnstile", "captcha"],
+    "keywords": ["laravel", "authentication", "oauth", "google", "turnstile", "recaptcha", "captcha"],
     "authors": [
         { "name": "Bijan Kanti Munshi" }
     ],
@@ -30,6 +30,7 @@
         "laravel": {
             "providers": ["Bijon\\LaravelAuth\\Providers\\AuthServiceProvider"],
             "aliases": {
+                "Captcha": "Bijon\\LaravelAuth\\Facades\\Captcha",
                 "GoogleOAuth": "Bijon\\LaravelAuth\\Facades\\GoogleOAuth",
                 "Turnstile": "Bijon\\LaravelAuth\\Facades\\Turnstile"
             }

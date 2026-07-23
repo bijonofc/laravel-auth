@@ -1,5 +1,24 @@
 # Upgrade Guide
 
+## 1.1.0 — provider-based captcha system + Google reCAPTCHA v3
+
+**No action is required.** Turnstile integrations keep working exactly as before: the `turnstile` middleware and validation rule, the `Turnstile` facade, `TurnstileService`, `TurnstileRule`, `TurnstileException`, the `TurnstileVerified`/`TurnstileFailed` events, and all `laravel-auth.turnstile.*` config keys are unchanged.
+
+What's new:
+
+- **Google reCAPTCHA v3** support (`RecaptchaV3Service`) with score and action checks — set `LA_RECAPTCHA_SITE_KEY` + `LA_RECAPTCHA_SECRET` and it activates via [auto-detection](Captcha.md#automatic-provider-detection).
+- Provider-agnostic **`captcha` middleware and validation rule**, the **`Captcha` facade** / `CaptchaManager`, and `Captcha::extend()` for custom providers. Prefer these in new code; the `turnstile` aliases stay.
+- `CaptchaResponse` gained `provider`, `score`, and `raw` properties (existing properties untouched).
+- New config keys `laravel-auth.recaptcha.*` and `laravel-auth.captcha.provider`. Your published config keeps working without them; re-publish with `--force` to pick up the new commented defaults if you want them in your file.
+
+Internal notes, only relevant if you extended the package:
+
+- `TurnstileService` now extends the new `AbstractCaptchaService`; behavior is unchanged. `CaptchaProviderInterface` itself is untouched (contracts stay frozen).
+- `TurnstileException` now extends the new `CaptchaException`, and `TurnstileVerified`/`TurnstileFailed` extend the new `CaptchaVerified`/`CaptchaFailed` — existing `catch`/listener code keeps working. Turnstile verifications now fire the generic events *in addition to* the Turnstile ones.
+- `VerifyTurnstile` now extends the new `VerifyCaptcha` middleware; constructor signature and behavior are unchanged.
+- `TurnstileRule` now extends the new `CaptchaRule`; behavior is unchanged.
+- `app(CaptchaProviderInterface::class)` resolves through auto-detection instead of a hard alias to `TurnstileService`. With only Turnstile configured (or nothing configured) it still resolves the `TurnstileService` singleton, so existing behavior is preserved; custom rebindings of the interface still win everywhere.
+
 ## 1.0.1 — migrating from `appsbd/auth`
 
 The package was renamed from `appsbd/auth` to `bijon/laravel-auth` (now on Packagist), the PHP namespace changed from `Appsbd\Auth` to `Bijon\LaravelAuth`, the config file from `appsbd-auth.php` to `laravel-auth.php`, and the env vars from `APPSBD_*` to `LA_*`.

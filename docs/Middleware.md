@@ -1,19 +1,26 @@
 # Middleware
 
-The package registers the route middleware alias `turnstile` (`Bijon\LaravelAuth\Http\Middleware\VerifyTurnstile`).
+The package registers two route middleware aliases:
+
+| Alias | Class | Token input |
+|---|---|---|
+| `captcha` | `Bijon\LaravelAuth\Http\Middleware\VerifyCaptcha` | the [detected provider](Captcha.md#automatic-provider-detection)'s `input_name` (`cf-turnstile-response` / `g-recaptcha-response`) |
+| `turnstile` | `Bijon\LaravelAuth\Http\Middleware\VerifyTurnstile` | `laravel-auth.turnstile.input_name` (default `cf-turnstile-response`) |
+
+Prefer `captcha` — it is provider-agnostic and never needs to change when you switch providers. `turnstile` is kept for backward compatibility as a thin wrapper around the same implementation, pinned to the Turnstile input name.
 
 ## Usage
 
 ```php
-Route::post('/login', [LoginController::class, 'login'])->middleware('turnstile');
+Route::post('/login', [LoginController::class, 'login'])->middleware('captcha');
 
-Route::middleware('turnstile')->group(function () {
+Route::middleware('captcha')->group(function () {
     Route::post('/register', RegisterController::class);
     Route::post('/contact', ContactController::class);
 });
 ```
 
-The middleware reads the token from the request input named by `laravel-auth.turnstile.input_name` (default `cf-turnstile-response`), verifies it with the client IP, and:
+The middleware reads the token from the active provider's input name, verifies it with the client IP, and:
 
 - **Success** → passes the request through.
 - **Failure, JSON request** (`expectsJson()`) → responds `422`:
@@ -40,8 +47,12 @@ The middleware reads the token from the request input named by `laravel-auth.tur
 ## Changing the input name
 
 ```php
-// config/laravel-auth.php
+// config/laravel-auth.php — under the provider you use
 'turnstile' => [
+    'input_name' => 'captcha_token',
+],
+// or
+'recaptcha' => [
     'input_name' => 'captcha_token',
 ],
 ```
@@ -50,5 +61,5 @@ Both the middleware and anything reading the config follow automatically. Keep y
 
 ## Caveats
 
-- Turnstile tokens are **single-use**. Apply the middleware to state-changing POST routes only — never to GET pages, and don't stack it on a route whose controller *also* validates with the `turnstile` rule (the second check would always fail).
+- Captcha tokens are **single-use**. Apply the middleware to state-changing POST routes only — never to GET pages, and don't stack it on a route whose controller *also* validates with the `captcha`/`turnstile` rule (the second check would always fail).
 - Choose middleware vs [validation rule](Validation.md): middleware rejects before your controller runs; the rule composes with the rest of your form validation and reports alongside other field errors.

@@ -1,11 +1,12 @@
 # bijon/laravel-auth
 
-Authentication integrations for Laravel: **Google OAuth2** and **Cloudflare Turnstile**, built for Laravel 12/13 apps — especially Vue 3 SPAs using Sanctum cookie auth.
+Authentication integrations for Laravel: **Google OAuth2** and **CAPTCHA verification** (Cloudflare Turnstile, Google reCAPTCHA v3), built for Laravel 12/13 apps — especially Vue 3 SPAs using Sanctum cookie auth.
 
 ## Features
 
 - **Google OAuth2** — hand-rolled on the Laravel HTTP client (no Socialite dependency): authorization URL generation, redirect/callback conveniences, code exchange, userinfo, token refresh, and revocation.
-- **Cloudflare Turnstile** — server-side verification as a service, a route middleware (`turnstile`), and a validation rule (string `'turnstile'` or `new TurnstileRule`).
+- **Provider-based CAPTCHA** — one system, multiple providers: **Cloudflare Turnstile** and **Google reCAPTCHA v3** (score + action checks) built in, custom providers via `Captcha::extend()`. The active provider is **auto-detected** from your env vars.
+- **Provider-agnostic API** — a route middleware (`captcha`), a validation rule (string `'captcha'` or `new CaptchaRule`), and a unified `CaptchaResponse` DTO, identical whichever provider is configured. The `turnstile` middleware/rule aliases keep working.
 - **Services only** — the package ships no routes, controllers, or views. Your app stays in control of its endpoints and its User model.
 - **Events, not persistence** — listen to `GoogleLoginSucceeded` and do your own find-or-create + login. The package never touches your database.
 - **CSRF-safe OAuth state** — session-backed state is generated and validated automatically, with an explicit override for stateless setups.
@@ -35,9 +36,16 @@ LA_GOOGLE_CLIENT_ID=your-client-id.apps.googleusercontent.com
 LA_GOOGLE_CLIENT_SECRET=your-client-secret
 LA_GOOGLE_REDIRECT_URI=https://your-app.test/auth/google/callback
 
+# Captcha — configure ONE provider; the package auto-detects it.
+# Cloudflare Turnstile:
 LA_TURNSTILE_SITE_KEY=0x4AAAAAAA...
 LA_TURNSTILE_SECRET=0x4AAAAAAA...
-LA_TURNSTILE_TIMEOUT=10
+
+# ... or Google reCAPTCHA v3:
+LA_RECAPTCHA_SITE_KEY=6Lc...
+LA_RECAPTCHA_SECRET=6Lc...
+LA_RECAPTCHA_SCORE=0.5
+LA_RECAPTCHA_ACTION=login
 ```
 
 ## Quick start — Google OAuth
@@ -73,33 +81,35 @@ Event::listen(GoogleLoginSucceeded::class, function (GoogleLoginSucceeded $event
 });
 ```
 
-## Quick start — Turnstile
+## Quick start — Captcha
 
-Guard any route with the middleware:
+Set the env vars for either Turnstile **or** reCAPTCHA v3 — the package detects which one you configured. Then guard any route with the middleware:
 
 ```php
-Route::post('/login', LoginController::class)->middleware('turnstile');
+Route::post('/login', LoginController::class)->middleware('captcha');
 ```
 
 Or compose it into validation:
 
 ```php
 $request->validate([
-    'cf-turnstile-response' => ['required', 'turnstile'],
+    'cf-turnstile-response' => ['required', 'captcha'], // g-recaptcha-response for reCAPTCHA
 ]);
 ```
 
-Or call the service directly:
+Or call the service directly — the `Captcha` facade always talks to the detected provider:
 
 ```php
-use Bijon\LaravelAuth\Facades\Turnstile;
+use Bijon\LaravelAuth\Facades\Captcha;
 
-$result = Turnstile::verify($token, $request->ip());
+$result = Captcha::verify($token, $request->ip());
 
 if ($result->failed()) {
-    // $result->errorCodes
+    // $result->errorCodes, $result->score (reCAPTCHA), $result->provider
 }
 ```
+
+`Captcha::detect()`, `Captcha::siteKey()`, and `Captcha::inputName()` give your frontend everything it needs without hardcoding a provider. Existing Turnstile integrations (`turnstile` middleware/rule, `Turnstile` facade) keep working unchanged.
 
 ## Documentation
 
@@ -108,12 +118,14 @@ if ($result->failed()) {
 | [Installation](docs/Installation.md) | Install, publish config, provider dashboards setup |
 | [Configuration](docs/Configuration.md) | Every config key, env vars, error behavior |
 | [GoogleOAuth](docs/GoogleOAuth.md) | Full OAuth API, state handling, events, errors |
+| [Captcha](docs/Captcha.md) | Provider system, auto-detection, manager, custom providers |
 | [Turnstile](docs/Turnstile.md) | verify/verifyOrFail, response fields, events |
-| [Middleware](docs/Middleware.md) | The `turnstile` middleware and failure modes |
+| [Recaptcha](docs/Recaptcha.md) | reCAPTCHA v3: score/action checks, frontend token flow |
+| [Middleware](docs/Middleware.md) | The `captcha`/`turnstile` middleware and failure modes |
 | [Validation](docs/Validation.md) | String and object validation rules |
 | [Facades](docs/Facades.md) | `GoogleOAuth` and `Turnstile` facades |
 | [DependencyInjection](docs/DependencyInjection.md) | Injecting the interfaces, swapping implementations |
-| [Testing](docs/Testing.md) | Faking Google/Turnstile in your app's tests |
+| [Testing](docs/Testing.md) | Faking Google, Turnstile, and reCAPTCHA in your app's tests |
 | [VueIntegration](docs/VueIntegration.md) | **Vue 3 SPA + Sanctum cookie auth, end to end** |
 | [Examples](docs/Examples.md) | Runnable controller/listener snippets |
 | [Publishing](docs/Publishing.md) | Release process and semver policy |

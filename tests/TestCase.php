@@ -20,6 +20,7 @@ abstract class TestCase extends BaseTestCase
     protected function getPackageAliases($app): array
     {
         return [
+            'Captcha'     => \Bijon\LaravelAuth\Facades\Captcha::class,
             'GoogleOAuth' => \Bijon\LaravelAuth\Facades\GoogleOAuth::class,
             'Turnstile'   => \Bijon\LaravelAuth\Facades\Turnstile::class,
         ];

@@ -1,6 +1,6 @@
 # Facades
 
-Two facades are registered by auto-discovery. They are optional sugar over the container singletons — everything they do is available via [dependency injection](DependencyInjection.md).
+Three facades are registered by auto-discovery. They are optional sugar over the container singletons — everything they do is available via [dependency injection](DependencyInjection.md).
 
 ## `Bijon\LaravelAuth\Facades\GoogleOAuth`
 
@@ -14,7 +14,25 @@ Two facades are registered by auto-discovery. They are optional sugar over the c
 | `refreshToken(string $refreshToken)` | `OAuthTokens` |
 | `revokeToken(string $token)` | `bool` |
 
+## `Bijon\LaravelAuth\Facades\Captcha`
+
+Fronts the [`CaptchaManager`](Captcha.md#the-manager) — provider-agnostic, always acting on the [auto-detected provider](Captcha.md#automatic-provider-detection):
+
+| Method | Returns |
+|---|---|
+| `verify(string $token, ?string $ip = null)` | `CaptchaResponse` |
+| `verifyOrFail(string $token, ?string $ip = null)` | `CaptchaResponse` (throws `CaptchaException` on failure) |
+| `detect()` | `string` — the active provider name |
+| `provider(?string $name = null)` | `CaptchaProviderInterface` |
+| `isConfigured(string $name)` | `bool` |
+| `providers()` | `list<string>` |
+| `siteKey()` | `?string` — the active provider's public site key |
+| `inputName()` | `string` — the request input the frontend submits the token under |
+| `extend(string $name, string\|Closure $provider)` | `CaptchaManager` — [register a custom provider](Captcha.md#adding-your-own-provider) |
+
 ## `Bijon\LaravelAuth\Facades\Turnstile`
+
+Pinned to the Turnstile provider regardless of detection:
 
 | Method | Returns |
 |---|---|
