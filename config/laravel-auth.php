@@ -14,6 +14,8 @@ return [
         'secret'     => env('LA_TURNSTILE_SECRET'),
         'timeout'    => env('LA_TURNSTILE_TIMEOUT', 10),
         'input_name' => 'cf-turnstile-response',
+        // Override the widget script URL served to the frontend (null = provider default).
+        'script_url' => env('LA_TURNSTILE_SCRIPT_URL'),
     ],
 
     'recaptcha' => [
@@ -23,6 +25,8 @@ return [
         'input_name' => 'g-recaptcha-response',
         'min_score'  => env('LA_RECAPTCHA_SCORE', 0.5),
         'action'     => env('LA_RECAPTCHA_ACTION'),
+        // Override the widget script URL served to the frontend (null = default, with ?render={site_key}).
+        'script_url' => env('LA_RECAPTCHA_SCRIPT_URL'),
     ],
 
     'captcha' => [

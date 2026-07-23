@@ -33,6 +33,9 @@ return [
 
         // Request input the middleware/rule reads the token from.
         'input_name' => 'cf-turnstile-response',
+
+        // Override the widget script URL served to the frontend (null = provider default).
+        'script_url' => env('LA_TURNSTILE_SCRIPT_URL'),
     ],
 
     'recaptcha' => [
@@ -53,6 +56,9 @@ return [
 
         // Expected action name; null disables the action check.
         'action'     => env('LA_RECAPTCHA_ACTION'),
+
+        // Override the widget script URL served to the frontend (null = default, with ?render={site_key}).
+        'script_url' => env('LA_RECAPTCHA_SCRIPT_URL'),
     ],
 
     'captcha' => [
@@ -76,12 +82,14 @@ return [
 | `turnstile.secret` | string | `LA_TURNSTILE_SECRET` | — | `ConfigurationException` naming `laravel-auth.turnstile.secret` |
 | `turnstile.timeout` | int (seconds) | `LA_TURNSTILE_TIMEOUT` | `10` | falls back to `10` |
 | `turnstile.input_name` | string | *(config only)* | `cf-turnstile-response` | falls back to the default |
+| `turnstile.script_url` | string | `LA_TURNSTILE_SCRIPT_URL` | Cloudflare's `api.js` | falls back to the default |
 | `recaptcha.site_key` | string | `LA_RECAPTCHA_SITE_KEY` | — | provider not auto-detected; served to your frontend via `Captcha::siteKey()` |
 | `recaptcha.secret` | string | `LA_RECAPTCHA_SECRET` | — | `ConfigurationException` naming `laravel-auth.recaptcha.secret` |
 | `recaptcha.timeout` | int (seconds) | `LA_RECAPTCHA_TIMEOUT` | `10` | falls back to `10` |
 | `recaptcha.input_name` | string | *(config only)* | `g-recaptcha-response` | falls back to the default |
 | `recaptcha.min_score` | float (0.0–1.0) | `LA_RECAPTCHA_SCORE` | `0.5` | falls back to `0.5` |
-| `recaptcha.action` | string | `LA_RECAPTCHA_ACTION` | `null` | action check disabled |
+| `recaptcha.action` | string | `LA_RECAPTCHA_ACTION` | `null` | action check disabled; frontend `params.action` falls back to `login` |
+| `recaptcha.script_url` | string | `LA_RECAPTCHA_SCRIPT_URL` | Google's `api.js?render={site_key}` | falls back to the default |
 | `captcha.provider` | string | `LA_CAPTCHA_PROVIDER` | `null` | [auto-detection](Captcha.md#automatic-provider-detection); unknown names throw `ConfigurationException` |
 
 `ConfigurationException` is thrown lazily — at the moment a service call actually needs the value, not at boot. The message names the exact config key so misconfiguration is diagnosable from logs.

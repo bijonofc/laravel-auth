@@ -33,6 +33,24 @@ abstract class AbstractCaptchaService implements CaptchaProviderInterface
         return $this->config['input_name'] ?? 'captcha-token';
     }
 
+    /** The JS script the frontend must load to render this provider's widget. */
+    public function scriptUrl(): ?string
+    {
+        return $this->config['script_url'] ?? $this->defaultScriptUrl();
+    }
+
+    /** Default script URL when `script_url` is not configured. */
+    protected function defaultScriptUrl(): ?string
+    {
+        return null;
+    }
+
+    /** Provider-specific extras the frontend needs (e.g. reCAPTCHA's action). */
+    public function frontendParams(): array
+    {
+        return [];
+    }
+
     public function verify(string $token, ?string $ip = null): CaptchaResponse
     {
         $secret = $this->config['secret'] ?? null;

@@ -111,6 +111,58 @@ if ($result->failed()) {
 
 `Captcha::detect()`, `Captcha::siteKey()`, and `Captcha::inputName()` give your frontend everything it needs without hardcoding a provider. Existing Turnstile integrations (`turnstile` middleware/rule, `Turnstile` facade) keep working unchanged.
 
+### Frontend bootstrap in one line
+
+Instead of wiring those pieces up separately, drop the whole frontend config into your blade layout:
+
+```blade
+<script>
+    window.app_settings = { captcha: @json(\Bijon\LaravelAuth\Facades\Captcha::frontendConfig()) };
+</script>
+```
+
+`frontendConfig()` returns `null` when no captcha provider is configured, otherwise:
+
+```json
+{
+    "provider": "recaptcha",
+    "site_key": "6Lc...",
+    "input": "g-recaptcha-response",
+    "script": "https://www.google.com/recaptcha/api.js?render=6Lc...",
+    "params": { "action": "login" }
+}
+```
+
+Your SPA can then render the active widget without knowing which provider is behind it:
+
+```js
+const captcha = window.app_settings.captcha;
+
+if (captcha) {
+    // Load the provider script dynamically.
+    const script = document.createElement('script');
+    script.src = captcha.script;
+    script.async = true;
+    document.head.appendChild(script);
+}
+
+async function captchaToken() {
+    if (!captcha) return {};
+
+    if (captcha.provider === 'recaptcha') {
+        const token = await grecaptcha.execute(captcha.site_key, { action: captcha.params.action });
+        return { [captcha.input]: token };
+    }
+
+    // turnstile: read the token the widget wrote into the form
+    return { [captcha.input]: document.querySelector(`[name="${captcha.input}"]`)?.value };
+}
+
+await axios.post('/login', { email, password, ...(await captchaToken()) });
+```
+
+`params` carries provider-specific extras (for reCAPTCHA v3, the `action` — `laravel-auth.recaptcha.action`, defaulting to `login`). Each provider's script URL can be overridden with a `script_url` config key.
+
 ## Documentation
 
 | Guide | Contents |

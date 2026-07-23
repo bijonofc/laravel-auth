@@ -15,6 +15,7 @@ use Illuminate\Support\Facades\Facade;
  * @method static list<string> providers()
  * @method static ?string siteKey()
  * @method static string inputName()
+ * @method static ?array frontendConfig()
  *
  * @see CaptchaManager
  */

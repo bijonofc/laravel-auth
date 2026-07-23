@@ -111,6 +111,31 @@ class CaptchaManager implements CaptchaProviderInterface
         return method_exists($provider, 'inputName') ? $provider->inputName() : 'captcha-token';
     }
 
+    /**
+     * Everything a frontend needs to render the active captcha widget, or null
+     * when no provider is configured — so a SPA can just check for null.
+     *
+     * @return array{provider: string, site_key: ?string, input: string, script: ?string, params: array}|null
+     */
+    public function frontendConfig(): ?array
+    {
+        $name = $this->detect();
+
+        if (! $this->isConfigured($name)) {
+            return null;
+        }
+
+        $provider = $this->provider($name);
+
+        return [
+            'provider' => $name,
+            'site_key' => $this->siteKey(),
+            'input'    => method_exists($provider, 'inputName') ? $provider->inputName() : 'captcha-token',
+            'script'   => method_exists($provider, 'scriptUrl') ? $provider->scriptUrl() : null,
+            'params'   => method_exists($provider, 'frontendParams') ? $provider->frontendParams() : [],
+        ];
+    }
+
     protected function config(string $key): array
     {
         return $this->app->make('config')->get("laravel-auth.{$key}", []) ?? [];

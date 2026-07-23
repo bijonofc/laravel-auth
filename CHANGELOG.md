@@ -2,6 +2,14 @@
 
 All notable changes to `bijon/laravel-auth` are documented here. Follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and semver.
 
+## [1.1.1] - 2026-07-23
+
+### Added
+- `Captcha::frontendConfig()`: one call that returns everything a SPA needs to render the active captcha widget — `provider`, `site_key`, `input` (request field the backend reads), `script` (provider JS URL), and `params` (provider-specific extras, e.g. reCAPTCHA's `action`, default `login`). Returns `null` when no provider is configured, so a blade layout can bootstrap with a single line: `window.app_settings = { captcha: @json(Captcha::frontendConfig()) }`.
+- Provider hooks `scriptUrl()` and `frontendParams()` on `AbstractCaptchaService`, with per-provider defaults (Cloudflare `api.js` for Turnstile, Google `api.js?render={site_key}` for reCAPTCHA) and a `script_url` config override per provider (`LA_TURNSTILE_SCRIPT_URL` / `LA_RECAPTCHA_SCRIPT_URL`).
+
+Backward compatible: no changes to `verify()`, `detect()`, `siteKey()`, or `inputName()`; custom providers that don't implement the new hooks keep working (duck-typed like `inputName()`).
+
 ## [1.1.0] - 2026-07-23
 
 ### Added

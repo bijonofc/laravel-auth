@@ -23,6 +23,17 @@ class RecaptchaV3Service extends AbstractCaptchaService
         return $this->config['input_name'] ?? 'g-recaptcha-response';
     }
 
+    protected function defaultScriptUrl(): ?string
+    {
+        return 'https://www.google.com/recaptcha/api.js?render='
+            . urlencode((string) ($this->config['site_key'] ?? ''));
+    }
+
+    public function frontendParams(): array
+    {
+        return ['action' => $this->config['action'] ?? 'login'];
+    }
+
     protected function mapResponse(array $data): CaptchaResponse
     {
         $success = (bool) ($data['success'] ?? false);

@@ -88,6 +88,49 @@ it('exposes the active provider site key and input name', function () {
         ->and($manager->inputName())->toBe('g-recaptcha-response');
 });
 
+it('returns null frontend config when no provider is configured', function () {
+    expect(app(CaptchaManager::class)->frontendConfig())->toBeNull();
+});
+
+it('builds the turnstile frontend config', function () {
+    configureTurnstile();
+
+    expect(app(CaptchaManager::class)->frontendConfig())->toBe([
+        'provider' => 'turnstile',
+        'site_key' => 'tk',
+        'input'    => 'cf-turnstile-response',
+        'script'   => 'https://challenges.cloudflare.com/turnstile/v0/api.js',
+        'params'   => [],
+    ]);
+});
+
+it('builds the recaptcha frontend config with the render param and default action', function () {
+    configureRecaptcha();
+
+    expect(app(CaptchaManager::class)->frontendConfig())->toBe([
+        'provider' => 'recaptcha',
+        'site_key' => 'rk',
+        'input'    => 'g-recaptcha-response',
+        'script'   => 'https://www.google.com/recaptcha/api.js?render=rk',
+        'params'   => ['action' => 'login'],
+    ]);
+});
+
+it('uses the configured recaptcha action in frontend params', function () {
+    configureRecaptcha();
+    config()->set('laravel-auth.recaptcha.action', 'signup');
+
+    expect(app(CaptchaManager::class)->frontendConfig()['params'])->toBe(['action' => 'signup']);
+});
+
+it('honors a script_url config override', function () {
+    configureTurnstile();
+    config()->set('laravel-auth.turnstile.script_url', 'https://example.com/self-hosted.js');
+
+    expect(app(CaptchaManager::class)->frontendConfig()['script'])
+        ->toBe('https://example.com/self-hosted.js');
+});
+
 it('lets apps register additional providers without touching the manager', function () {
     config()->set('laravel-auth.fake.site_key', 'fk');
     config()->set('laravel-auth.fake.secret', 'fs');

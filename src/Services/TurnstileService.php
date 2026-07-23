@@ -27,6 +27,11 @@ class TurnstileService extends AbstractCaptchaService
         return $this->config['input_name'] ?? 'cf-turnstile-response';
     }
 
+    protected function defaultScriptUrl(): ?string
+    {
+        return 'https://challenges.cloudflare.com/turnstile/v0/api.js';
+    }
+
     protected function mapResponse(array $data): CaptchaResponse
     {
         return new CaptchaResponse(
