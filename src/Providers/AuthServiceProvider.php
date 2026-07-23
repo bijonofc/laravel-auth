@@ -62,5 +62,14 @@ class AuthServiceProvider extends ServiceProvider
 
         Validator::extend('captcha', $verifyCaptcha, 'The :attribute field failed captcha verification.');
         Validator::extend('turnstile', $verifyCaptcha, 'The :attribute field failed captcha verification.');
+
+        // Only when views are in play — console/Octane contexts without Blade stay untouched.
+        $this->callAfterResolving('blade.compiler', function ($compiler) {
+            $compiler->directive('captchaConfig', function (?string $expression) {
+                $expression = trim($expression ?? '') === '' ? '[]' : $expression;
+
+                return "<?php echo json_encode(\Bijon\LaravelAuth\Facades\Captcha::frontendConfig({$expression})); ?>";
+            });
+        });
     }
 }

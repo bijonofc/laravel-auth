@@ -113,15 +113,21 @@ if ($result->failed()) {
 
 ### Frontend bootstrap in one line
 
-Instead of wiring those pieces up separately, drop the whole frontend config into your blade layout:
+Instead of wiring those pieces up separately, drop the whole frontend config into your blade layout with the `@captchaConfig` directive:
 
 ```blade
 <script>
-    window.app_settings = { captcha: @json(\Bijon\LaravelAuth\Facades\Captcha::frontendConfig()) };
+    window.app_settings = { captcha: @captchaConfig };
 </script>
 ```
 
-`frontendConfig()` returns `null` when no captcha provider is configured, otherwise:
+Pass an array to merge extra data into the JSON (your keys win over the defaults):
+
+```blade
+window.app_settings = { captcha: @captchaConfig(['page' => 'login', 'theme' => 'dark']) };
+```
+
+The directive is equivalent to `@json(\Bijon\LaravelAuth\Facades\Captcha::frontendConfig())`, which you can still call directly — `frontendConfig(array $extra = [])` accepts the same merge argument. It returns `null` (the directive prints literal `null`, still valid JSON) when no captcha provider is configured — even when `$extra` is non-empty, since no provider means there is no widget to render. Otherwise:
 
 ```json
 {

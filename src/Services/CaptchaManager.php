@@ -115,9 +115,12 @@ class CaptchaManager implements CaptchaProviderInterface
      * Everything a frontend needs to render the active captcha widget, or null
      * when no provider is configured — so a SPA can just check for null.
      *
+     * Caller-supplied $extra keys are merged in and win over the defaults.
+     * Null still means "no widget": $extra is ignored when unconfigured.
+     *
      * @return array{provider: string, site_key: ?string, input: string, script: ?string, params: array}|null
      */
-    public function frontendConfig(): ?array
+    public function frontendConfig(array $extra = []): ?array
     {
         $name = $this->detect();
 
@@ -127,13 +130,13 @@ class CaptchaManager implements CaptchaProviderInterface
 
         $provider = $this->provider($name);
 
-        return [
+        return array_merge([
             'provider' => $name,
             'site_key' => $this->siteKey(),
             'input'    => method_exists($provider, 'inputName') ? $provider->inputName() : 'captcha-token',
             'script'   => method_exists($provider, 'scriptUrl') ? $provider->scriptUrl() : null,
             'params'   => method_exists($provider, 'frontendParams') ? $provider->frontendParams() : [],
-        ];
+        ], $extra);
     }
 
     protected function config(string $key): array

@@ -2,6 +2,14 @@
 
 All notable changes to `bijon/laravel-auth` are documented here. Follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and semver.
 
+## [1.1.2] - 2026-07-23
+
+### Added
+- `@captchaConfig` Blade directive: prints `Captcha::frontendConfig()` as JSON straight into a layout — `window.app_settings = { captcha: @captchaConfig };` — with an optional array argument merged into the output: `@captchaConfig(['page' => 'login'])`. Prints literal `null` (valid JSON) when no provider is configured. Registered via `callAfterResolving('blade.compiler', ...)`, so contexts without Blade (console, Octane workers) are unaffected.
+- `Captcha::frontendConfig(array $extra = [])`: caller-supplied keys are merged in and win over the defaults (`provider`, `site_key`, `input`, `script`, `params`). Still returns `null` when no provider is configured, even with non-empty `$extra` — no provider means no widget.
+
+Backward compatible: the new parameter defaults to `[]`.
+
 ## [1.1.1] - 2026-07-23
 
 ### Added

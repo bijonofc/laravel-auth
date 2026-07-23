@@ -131,6 +131,20 @@ it('honors a script_url config override', function () {
         ->toBe('https://example.com/self-hosted.js');
 });
 
+it('merges extra data into the frontend config with caller keys winning', function () {
+    configureRecaptcha();
+
+    $config = app(CaptchaManager::class)->frontendConfig(['site_key' => 'override', 'page' => 'login']);
+
+    expect($config['site_key'])->toBe('override')
+        ->and($config['page'])->toBe('login')
+        ->and($config['provider'])->toBe('recaptcha');
+});
+
+it('still returns null frontend config when unconfigured, even with extra data', function () {
+    expect(app(CaptchaManager::class)->frontendConfig(['x' => 1]))->toBeNull();
+});
+
 it('lets apps register additional providers without touching the manager', function () {
     config()->set('laravel-auth.fake.site_key', 'fk');
     config()->set('laravel-auth.fake.secret', 'fs');
